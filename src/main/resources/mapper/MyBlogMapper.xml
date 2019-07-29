@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myplace.models.dao.MyBlogMapper">
+    <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyBlog">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="label" jdbcType="INTEGER" property="label" />
+        <result column="author" jdbcType="INTEGER" property="author" />
+        <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
+        <result column="comments" jdbcType="INTEGER" property="comments" />
+        <result column="compliments" jdbcType="INTEGER" property="compliments" />
+        <result column="reader" jdbcType="INTEGER" property="reader" />
+        <result column="is_top" jdbcType="INTEGER" property="isTop" />
+        <result column="topping_time" jdbcType="TIMESTAMP" property="toppingTime" />
+        <result column="is_selected" jdbcType="INTEGER" property="isSelected" />
+        <result column="selected_time" jdbcType="TIMESTAMP" property="selectedTime" />
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, title,label, author, ins_time, comments, compliments, reader, is_top, topping_time, is_selected,
+    selected_time,content
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from my_blog
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from my_blog
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.myplace.models.entity.MyBlog">
+    insert into my_blog (id, title,label, author,
+      ins_time, comments, compliments,
+      reader, is_top, topping_time,
+      is_selected, selected_time, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{label,jdbcType=INTEGER}, #{author,jdbcType=INTEGER},
+      #{insTime,jdbcType=TIMESTAMP}, #{comments,jdbcType=INTEGER}, #{compliments,jdbcType=INTEGER},
+      #{reader,jdbcType=INTEGER}, #{isTop,jdbcType=INTEGER}, #{toppingTime,jdbcType=TIMESTAMP},
+      #{isSelected,jdbcType=INTEGER}, #{selectedTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.myplace.models.entity.MyBlog">
+        insert into my_blog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="label != null">
+                label,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="insTime != null">
+                ins_time,
+            </if>
+            <if test="comments != null">
+                comments,
+            </if>
+            <if test="compliments != null">
+                compliments,
+            </if>
+            <if test="reader != null">
+                reader,
+            </if>
+            <if test="isTop != null">
+                is_top,
+            </if>
+            <if test="toppingTime != null">
+                topping_time,
+            </if>
+            <if test="isSelected != null">
+                is_selected,
+            </if>
+            <if test="selectedTime != null">
+                selected_time,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="label != null">
+                #{label,jdbcType=INTEGER},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=INTEGER},
+            </if>
+            <if test="insTime != null">
+                #{insTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comments != null">
+                #{comments,jdbcType=INTEGER},
+            </if>
+            <if test="compliments != null">
+                #{compliments,jdbcType=INTEGER},
+            </if>
+            <if test="reader != null">
+                #{reader,jdbcType=INTEGER},
+            </if>
+            <if test="isTop != null">
+                #{isTop,jdbcType=INTEGER},
+            </if>
+            <if test="toppingTime != null">
+                #{toppingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSelected != null">
+                #{isSelected,jdbcType=INTEGER},
+            </if>
+            <if test="selectedTime != null">
+                #{selectedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.myplace.models.entity.MyBlog">
+        update my_blog
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="label != null">
+                label = #{author,jdbcType=INTEGER},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=INTEGER},
+            </if>
+            <if test="insTime != null">
+                ins_time = #{insTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comments != null">
+                comments = #{comments,jdbcType=INTEGER},
+            </if>
+            <if test="compliments != null">
+                compliments = #{compliments,jdbcType=INTEGER},
+            </if>
+            <if test="reader != null">
+                reader = #{reader,jdbcType=INTEGER},
+            </if>
+            <if test="isTop != null">
+                is_top = #{isTop,jdbcType=INTEGER},
+            </if>
+            <if test="toppingTime != null">
+                topping_time = #{toppingTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSelected != null">
+                is_selected = #{isSelected,jdbcType=INTEGER},
+            </if>
+            <if test="selectedTime != null">
+                selected_time = #{selectedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.myplace.models.entity.MyBlog">
+    update my_blog
+    set title = #{title,jdbcType=VARCHAR},
+      label = #{label,jdbcType=INTEGER},
+      author = #{author,jdbcType=INTEGER},
+      ins_time = #{insTime,jdbcType=TIMESTAMP},
+      comments = #{comments,jdbcType=INTEGER},
+      compliments = #{compliments,jdbcType=INTEGER},
+      reader = #{reader,jdbcType=INTEGER},
+      is_top = #{isTop,jdbcType=INTEGER},
+      topping_time = #{toppingTime,jdbcType=TIMESTAMP},
+      is_selected = #{isSelected,jdbcType=INTEGER},
+      selected_time = #{selectedTime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.myplace.models.entity.MyBlog">
+    update my_blog
+    set title = #{title,jdbcType=VARCHAR},
+      label = #{label,jdbcType=INTEGER},
+      author = #{author,jdbcType=INTEGER},
+      ins_time = #{insTime,jdbcType=TIMESTAMP},
+      comments = #{comments,jdbcType=INTEGER},
+      compliments = #{compliments,jdbcType=INTEGER},
+      reader = #{reader,jdbcType=INTEGER},
+      is_top = #{isTop,jdbcType=INTEGER},
+      topping_time = #{toppingTime,jdbcType=TIMESTAMP},
+      is_selected = #{isSelected,jdbcType=INTEGER},
+      selected_time = #{selectedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!--获取轮播文章-->
+    <select id="getCarouselArticle" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            is_top = 1
+        ORDER BY
+            topping_time DESC
+        LIMIT 3
+    </select>
+
+    <!--获取最新文章-->
+    <select id="getLatestArticles" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            1 = 1
+        ORDER BY
+            ins_time DESC
+        LIMIT 3
+    </select>
+
+    <!--获取热门文章-->
+    <select id="getPopularArticles" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            1 = 1
+        ORDER BY
+            compliments DESC,
+            comments DESC
+        LIMIT 3
+    </select>
+
+    <!--获取阅读量最多文章-->
+    <select id="getMostReadingArticles" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            1 = 1
+        ORDER BY
+            reader DESC
+        LIMIT 5
+    </select>
+
+    <!--获取精选文章-->
+    <select id="getSelectedArticles" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            is_selected = 1
+        ORDER BY
+            selected_time DESC
+        LIMIT 2
+    </select>
+
+    <select id="getClassificationArticles" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            id IN (
+                SELECT
+                    blog_id
+                FROM
+                    my_article_label
+                WHERE
+                    label_id = #{labelId}
+                ORDER BY
+                    id DESC
+            )
+        ORDER BY
+            id DESC
+    </select>
+
+    <select id="getMostCommentedArticles" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            my_blog
+        WHERE
+            1 = 1
+        ORDER BY
+            comments DESC
+        LIMIT 6
+    </select>
+</mapper>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myplace.models.dao.MyUserDao">
+  <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="telephone" jdbcType="INTEGER" property="telephone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="network_avatar" jdbcType="VARCHAR" property="networkAvatar" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="hobby" jdbcType="VARCHAR" property="hobby" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="region_code" jdbcType="VARCHAR" property="regionCode" />
+    <result column="background" jdbcType="VARCHAR" property="background" />
+    <result column="pic_one" jdbcType="VARCHAR" property="picOne" />
+    <result column="pic_two" jdbcType="VARCHAR" property="picTwo" />
+    <result column="pic_three" jdbcType="VARCHAR" property="picThree" />
+    <result column="pic_four" jdbcType="VARCHAR" property="picFour" />
+    <result column="State" jdbcType="INTEGER" property="state" />
+    <result column="struts" jdbcType="INTEGER" property="struts" />
+    <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="subscribe" jdbcType="INTEGER" property="subscribe" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_name, nick_name, telephone, email, password, birthday, network_avatar, sex, 
+    introduction, hobby, region, region_code, background, pic_one, pic_two, pic_three, 
+    pic_four, State, struts, ins_time, salt, type, subscribe
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from my_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from my_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.myplace.models.entity.MyUser">
+    insert into my_user (id, user_name, nick_name, 
+      telephone, email, password, 
+      birthday, network_avatar, sex, 
+      introduction, hobby, region, 
+      region_code, background, pic_one, 
+      pic_two, pic_three, pic_four, 
+      State, struts, ins_time, 
+      salt, type, subscribe
+      )
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{networkAvatar,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{introduction,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{regionCode,jdbcType=VARCHAR}, #{background,jdbcType=VARCHAR}, #{picOne,jdbcType=VARCHAR}, 
+      #{picTwo,jdbcType=VARCHAR}, #{picThree,jdbcType=VARCHAR}, #{picFour,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{struts,jdbcType=INTEGER}, #{insTime,jdbcType=TIMESTAMP}, 
+      #{salt,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{subscribe,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.myplace.models.entity.MyUser">
+    insert into my_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="networkAvatar != null">
+        network_avatar,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+      <if test="hobby != null">
+        hobby,
+      </if>
+      <if test="region != null">
+        region,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
+      <if test="background != null">
+        background,
+      </if>
+      <if test="picOne != null">
+        pic_one,
+      </if>
+      <if test="picTwo != null">
+        pic_two,
+      </if>
+      <if test="picThree != null">
+        pic_three,
+      </if>
+      <if test="picFour != null">
+        pic_four,
+      </if>
+      <if test="state != null">
+        State,
+      </if>
+      <if test="struts != null">
+        struts,
+      </if>
+      <if test="insTime != null">
+        ins_time,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="subscribe != null">
+        subscribe,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="networkAvatar != null">
+        #{networkAvatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null">
+        #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="background != null">
+        #{background,jdbcType=VARCHAR},
+      </if>
+      <if test="picOne != null">
+        #{picOne,jdbcType=VARCHAR},
+      </if>
+      <if test="picTwo != null">
+        #{picTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="picThree != null">
+        #{picThree,jdbcType=VARCHAR},
+      </if>
+      <if test="picFour != null">
+        #{picFour,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="struts != null">
+        #{struts,jdbcType=INTEGER},
+      </if>
+      <if test="insTime != null">
+        #{insTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="subscribe != null">
+        #{subscribe,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.myplace.models.entity.MyUser">
+    update my_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="networkAvatar != null">
+        network_avatar = #{networkAvatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null">
+        hobby = #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="background != null">
+        background = #{background,jdbcType=VARCHAR},
+      </if>
+      <if test="picOne != null">
+        pic_one = #{picOne,jdbcType=VARCHAR},
+      </if>
+      <if test="picTwo != null">
+        pic_two = #{picTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="picThree != null">
+        pic_three = #{picThree,jdbcType=VARCHAR},
+      </if>
+      <if test="picFour != null">
+        pic_four = #{picFour,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        State = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="struts != null">
+        struts = #{struts,jdbcType=INTEGER},
+      </if>
+      <if test="insTime != null">
+        ins_time = #{insTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salt != null">
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="subscribe != null">
+        subscribe = #{subscribe,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.myplace.models.entity.MyUser">
+    update my_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      network_avatar = #{networkAvatar,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      region_code = #{regionCode,jdbcType=VARCHAR},
+      background = #{background,jdbcType=VARCHAR},
+      pic_one = #{picOne,jdbcType=VARCHAR},
+      pic_two = #{picTwo,jdbcType=VARCHAR},
+      pic_three = #{picThree,jdbcType=VARCHAR},
+      pic_four = #{picFour,jdbcType=VARCHAR},
+      State = #{state,jdbcType=INTEGER},
+      struts = #{struts,jdbcType=INTEGER},
+      ins_time = #{insTime,jdbcType=TIMESTAMP},
+      salt = #{salt,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      subscribe = #{subscribe,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
