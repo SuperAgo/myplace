@@ -14,6 +14,11 @@ public class MyLabel {
     private Integer parentId;
 
     /**
+     * 标签等级：1标题栏，2文章类型
+     */
+    private Integer tabGrade;
+
+    /**
      * 标签名称
      */
     private String labelName;
@@ -78,6 +83,20 @@ public class MyLabel {
      */
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+    }
+
+    /**
+     * 标签等级：1标题栏，2文章类型
+     */
+    public Integer getTabGrade() {
+        return tabGrade;
+    }
+
+    /**
+     * 标签等级：1标题栏，2文章类型
+     */
+    public void setTabGrade(Integer tabGrade) {
+        this.tabGrade = tabGrade;
     }
 
     /**

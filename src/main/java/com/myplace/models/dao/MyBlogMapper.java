@@ -31,4 +31,6 @@ public interface MyBlogMapper {
     List<MyBlog> getClassificationArticles(int getClassificationArticles);
 
     List<MyBlog> getMostCommentedArticles();
+
+    List<MyBlog> selectMyBlogByPage(Map<String, Object> params);
 }

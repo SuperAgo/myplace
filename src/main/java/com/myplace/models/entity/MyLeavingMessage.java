@@ -14,6 +14,11 @@ public class MyLeavingMessage {
     private Integer parentId;
 
     /**
+     * 博客Id，为空则为留言
+     */
+    private Integer blogId;
+
+    /**
      * 名字
      */
     private String name;
@@ -73,6 +78,22 @@ public class MyLeavingMessage {
      */
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+    }
+
+    /**
+     * 博客Id，为空则为留言
+     *
+     */
+    public Integer getBlogId() {
+        return blogId;
+    }
+
+    /**
+     * 博客Id，为空则为留言
+     *
+     */
+    public void setBlogId(Integer blogId) {
+        this.blogId = blogId;
     }
 
     /**

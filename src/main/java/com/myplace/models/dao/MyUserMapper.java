@@ -2,7 +2,9 @@ package com.myplace.models.dao;
 
 import com.myplace.models.entity.MyUser;
 
-public interface MyUserDao {
+import java.util.Map;
+
+public interface MyUserMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(MyUser record);
@@ -13,7 +15,11 @@ public interface MyUserDao {
 
     int updateByPrimaryKeySelective(MyUser record);
 
-    int updateByPrimaryKeyWithBLOBs(MyUser record);
-
     int updateByPrimaryKey(MyUser record);
+
+    Map selectByType(int type);
+
+    MyUser selectByEmail(String email);
+
+    Map getMyMessageBoard(int type);
 }

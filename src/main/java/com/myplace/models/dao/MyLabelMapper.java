@@ -21,4 +21,20 @@ public interface MyLabelMapper {
     List<Map> getLabelByParentId(int parentId);
 
     List<Map> getSonLabelList();
+
+    List<Map> getLabelByGradeId(int tabGrade);
+
+    Map getBlogTabByBlogId(Integer blogId);
+
+    Map getTabBySonId(Integer tabId);
+
+    Map getTabByBlogId(Integer blogId);
+
+    Map getTabByTabId(Integer tabId);
+
+    List<MyLabel> selectMyLabelByPage(Map params);
+
+    Map getTabByTabUrl(Map params);
+
+    List<Map> selectArticleSonLabels(Integer blogId);
 }

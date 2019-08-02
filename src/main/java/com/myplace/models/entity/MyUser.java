@@ -50,6 +50,11 @@ public class MyUser {
     private Integer sex;
 
     /**
+     * 个人签名
+     */
+    private String signature;
+
+    /**
      * 简介
      */
     private String introduction;
@@ -93,6 +98,16 @@ public class MyUser {
      * 小图4
      */
     private String picFour;
+
+    /**
+     * 留言板背景图
+     */
+    private String messageBoardPictures;
+
+    /**
+     * 留言板寄语
+     */
+    private String messageBoards;
 
     /**
      * 状态
@@ -275,6 +290,20 @@ public class MyUser {
     }
 
     /**
+     * 个人签名
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * 个人签名
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    /**
      * 简介
      * 
      */
@@ -416,6 +445,34 @@ public class MyUser {
      */
     public void setPicFour(String picFour) {
         this.picFour = picFour == null ? null : picFour.trim();
+    }
+
+    /**
+     * 留言板背景图
+     */
+    public String getMessageBoardPictures() {
+        return messageBoardPictures;
+    }
+
+    /**
+     * 留言板背景图
+     */
+    public void setMessageBoardPictures(String messageBoardPictures) {
+        this.messageBoardPictures = messageBoardPictures;
+    }
+
+    /**
+     * 留言板寄语
+     */
+    public String getMessageBoards() {
+        return messageBoards;
+    }
+
+    /**
+     * 留言板寄语
+     */
+    public void setMessageBoards(String messageBoards) {
+        this.messageBoards = messageBoards;
     }
 
     /**

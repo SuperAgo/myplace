@@ -2,29 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myplace.models.dao.MyBlogMapper">
     <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyBlog">
-        <id column="id" jdbcType="INTEGER" property="id" />
-        <result column="title" jdbcType="VARCHAR" property="title" />
-        <result column="label" jdbcType="INTEGER" property="label" />
-        <result column="author" jdbcType="INTEGER" property="author" />
-        <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
-        <result column="comments" jdbcType="INTEGER" property="comments" />
-        <result column="compliments" jdbcType="INTEGER" property="compliments" />
-        <result column="reader" jdbcType="INTEGER" property="reader" />
-        <result column="is_top" jdbcType="INTEGER" property="isTop" />
-        <result column="topping_time" jdbcType="TIMESTAMP" property="toppingTime" />
-        <result column="is_selected" jdbcType="INTEGER" property="isSelected" />
-        <result column="selected_time" jdbcType="TIMESTAMP" property="selectedTime" />
-        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="label" jdbcType="INTEGER" property="label"/>
+        <result column="author" jdbcType="INTEGER" property="author"/>
+        <result column="ins_time" jdbcType="TIMESTAMP" property="insTime"/>
+        <result column="comments" jdbcType="INTEGER" property="comments"/>
+        <result column="compliments" jdbcType="INTEGER" property="compliments"/>
+        <result column="reader" jdbcType="INTEGER" property="reader"/>
+        <result column="is_top" jdbcType="INTEGER" property="isTop"/>
+        <result column="topping_time" jdbcType="TIMESTAMP" property="toppingTime"/>
+        <result column="is_selected" jdbcType="INTEGER" property="isSelected"/>
+        <result column="selected_time" jdbcType="TIMESTAMP" property="selectedTime"/>
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+        <result column="label_name" jdbcType="VARCHAR" property="labelName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="network_avatar" jdbcType="VARCHAR" property="networkAvatar"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, title,label, author, ins_time, comments, compliments, reader, is_top, topping_time, is_selected,
     selected_time,content
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from my_blog
-        where id = #{id,jdbcType=INTEGER}
+        SELECT
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
+        FROM
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
+        WHERE
+            mb.id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from my_blog
@@ -134,7 +144,7 @@
                 title = #{title,jdbcType=VARCHAR},
             </if>
             <if test="label != null">
-                label = #{author,jdbcType=INTEGER},
+                label = #{label,jdbcType=INTEGER},
             </if>
             <if test="author != null">
                 author = #{author,jdbcType=INTEGER},
@@ -204,98 +214,147 @@
     <!--获取轮播文章-->
     <select id="getCarouselArticle" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
-            is_top = 1
+            mb.is_top = 1
         ORDER BY
-            topping_time DESC
+            mb.topping_time DESC
         LIMIT 3
     </select>
 
     <!--获取最新文章-->
     <select id="getLatestArticles" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
         ORDER BY
-            ins_time DESC
+            mb.ins_time DESC
         LIMIT 3
     </select>
 
     <!--获取热门文章-->
     <select id="getPopularArticles" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
         ORDER BY
-            compliments DESC,
-            comments DESC
+            mb.compliments DESC,
+            mb.comments DESC
         LIMIT 3
     </select>
 
     <!--获取阅读量最多文章-->
     <select id="getMostReadingArticles" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
         ORDER BY
-            reader DESC
+            mb.reader DESC
         LIMIT 5
     </select>
 
     <!--获取精选文章-->
     <select id="getSelectedArticles" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
-            is_selected = 1
+            mb.is_selected = 1
         ORDER BY
-            selected_time DESC
+            mb.selected_time DESC
         LIMIT 2
     </select>
 
     <select id="getClassificationArticles" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
-            id IN (
-                SELECT
-                    blog_id
-                FROM
-                    my_article_label
-                WHERE
-                    label_id = #{labelId}
-                ORDER BY
-                    id DESC
-            )
+            mb.label = #{labelId}
         ORDER BY
-            id DESC
+            mb.id DESC
+        LIMIT 4
     </select>
 
     <select id="getMostCommentedArticles" resultMap="BaseResultMap">
         SELECT
-            *
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
         FROM
-            my_blog
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
         ORDER BY
-            comments DESC
+            mb.comments DESC
         LIMIT 6
+    </select>
+
+    <select id="selectMyBlogByPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT
+            mb.*,
+            ml.label_name,
+            mu.nick_name,
+            mu.network_avatar
+        FROM
+            my_blog as mb
+            join my_label as ml on mb.label = ml.id
+            join my_user as mu on mu.id = mb.author
+        WHERE
+        1 = 1
+        <if test="label != null and label != ''">
+            and mb.label = #{label}
+        </if>
+        <if test="title != null and title != ''">
+            and mb.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        ORDER BY
+        mb.ins_time DESC
     </select>
 </mapper>

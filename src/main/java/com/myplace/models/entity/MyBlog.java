@@ -3,6 +3,34 @@ package com.myplace.models.entity;
 import java.util.Date;
 
 public class MyBlog {
+    private String labelName;
+    private String nickName;
+    private String networkAvatar;
+
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getNetworkAvatar() {
+        return networkAvatar;
+    }
+
+    public void setNetworkAvatar(String networkAvatar) {
+        this.networkAvatar = networkAvatar;
+    }
+
     /**
      * Id
      */

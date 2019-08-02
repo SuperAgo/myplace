@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /* *******************
  *
  * Template name:  FreeBlog
@@ -59,7 +59,9 @@
   list-style: none;
   outline: none !important;
 }
-
+.cat-title{
+  color: white;
+}
 ul,
 p {
   margin: 0;
@@ -566,6 +568,7 @@ body {
 .post-pagination {
   padding-top: 30px;
   padding-bottom: 30px;
+  width: 100%;
 }
 .post-pagination span,
 .post-pagination a {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="headInfo">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Document Title -->
+    <title>FreeBlog</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
+
+    <!--==== Google Fonts ====-->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+          rel="stylesheet">
+
+    <!-- CSS Files -->
+
+    <!--==== Bootstrap css file ====-->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <!--==== Font-Awesome css file ====-->
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+
+    <!--==== Animate CSS ====-->
+    <link rel="stylesheet" href="../plugins/animate/animate.min.css">
+
+    <!--==== Owl Carousel ====-->
+    <link rel="stylesheet" href="../plugins/owl-carousel/owl.carousel.min.css">
+
+    <!--==== Magnific Popup ====-->
+    <link rel="stylesheet" href="../plugins/magnific-popup/magnific-popup.css">
+
+    <!--==== Style css file ====-->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!--==== Responsive css file ====-->
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <!--==== Custom css file ====-->
+    <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body>
+<div th:fragment="myheader">
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preload-img">
+            <div class="spinnerBounce">
+                <div class="double-bounce1"></div>
+                <div class="double-bounce2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Preloader -->
+
+    <!-- Nav Search Box -->
+    <div class="nav-search-box">
+        <form action="/blog/scarch" method="post">
+            <div class="input-group">
+                <input type="text" name="title" class="form-control" placeholder="eg. feel the love and …">
+                <span class="b-line"></span>
+                <span class="b-line-under"></span>
+                <div class="input-group-append">
+                    <button type="button" class="btn">
+                        <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- End of Nav Search Box -->
+    <!-- Header -->
+    <header class="header">
+        <div class="header-fixed">
+            <div class="container-fluid pl-120 pr-120 position-relative">
+                <div class="row d-flex align-items-center">
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <!-- Logo -->
+                        <div class="logo">
+                            <a href="#"><img src="../images/logo.png" alt="" class="img-fluid"></a>
+                        </div>
+                        <!-- End of Logo -->
+                    </div>
+
+                    <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
+                        <!-- Nav Menu -->
+                        <div class="nav-menu-cover">
+                            <ul class="nav nav-menu"><!-- -->
+                                <li th:each="tabLabel:${myLabelList}" th:class="${tabLabel.sonLabelList.size()} > 0 ? 'menu-item-has-children' : ''">
+                                    <!--<a th:onclick="getURL([[${tabLabel.url}]],[[${tabLabel.id}]]);" th:text="${tabLabel.labelName}">
+                                        <ul class="sub-menu">
+                                            <li><a href="blog-details.html">Default Style</a></li>
+                                        </ul>
+                                    </a>-->
+                                    <a th:onclick="getURL([[${tabLabel.url}]],[[${tabLabel.id}]]);"th:text="${tabLabel.labelName}"></a>
+                                    <ul class="sub-menu" th:if="${tabLabel.sonLabelList.size()} > 0">
+                                        <li th:each="sonTab:${tabLabel.sonLabelList}"><a th:onclick="getURL([[${sonTab.url}]],[[${sonTab.id}]]);" th:text="${sonTab.labelName}"></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- End of Nav Menu -->
+
+                        <!-- Mobile Menu -->
+                        <div class="mobile-menu-cover">
+                            <ul class="nav mobile-nav-menu">
+                                <li class="search-toggle-open">
+                                    <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                                </li>
+                                <li class="search-toggle-close hide">
+                                    <img src="../images/close.svg" alt="" class="img-fluid">
+                                </li>
+                                <li class="nav-menu-toggle">
+                                    <img src="../images/menu-toggler.svg" alt="" class="img-fluid svg">
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- End of Mobile Menu -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End of Header -->
+</div>
+
+</body>
+</html>

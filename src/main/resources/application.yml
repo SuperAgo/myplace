@@ -5,10 +5,10 @@ spring:
     username: root
     password: Liu1234!
   server:
-      port: 8080
-      servlet:
-        session:
-          timeout: 30m #30���ӣ����ԵĻ�ʱ�䲻��̫�̣�����׼��m�Ƿ��ӵ�λ��s����ĵ�λ��h��Сʱ�ĵ�λ����д��λ�Ļ�Ĭ���Ǻ���
+    port: 8080
+    servlet:
+      session:
+        timeout: 30m #30���ӣ����ԵĻ�ʱ�䲻��̫�̣�����׼��m�Ƿ��ӵ�λ��s����ĵ�λ��h��Сʱ�ĵ�λ����д��λ�Ļ�Ĭ���Ǻ���
   logging:
     config: classpath:logback-admin.xml
   log:
@@ -19,8 +19,29 @@ spring:
     maxsize: 30MB
   mvc:
     static-path-pattern: /**
+    prefix: /static/blog/
+    suffix: .html
+  jackson:
+    date-format: yyyy年MM月dd日
+    joda-date-time-format: yyyy年MM月dd日
+    time-zone: GMT+8
+  thymeleaf:
+    #模板的模式，支持 HTML, XML TEXT JAVASCRIPT
+    mode: HTML5
+    #编码 可不用配置
+    encoding: UTF-8
+    #开发配置为false,避免修改模板还要重启服务器
+    cache: false
+    #配置模板路径，默认是templates，可以不用配置
+    prefix: classpath:/static/blog/
+    suffix: .html
 mybatis:
   type-aliases-package: com.myplace.models.entity
   mapper-locations: classpath:/mapper/*
   configuration:
     mapUnderscoreToCamelCase: true
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

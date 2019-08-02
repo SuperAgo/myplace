@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myplace.models.dao.MyUserDao">
+<mapper namespace="com.myplace.models.dao.MyUserMapper">
   <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyUser">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
@@ -11,6 +11,7 @@
     <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
     <result column="network_avatar" jdbcType="VARCHAR" property="networkAvatar" />
     <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="signature" jdbcType="VARCHAR" property="signature" />
     <result column="introduction" jdbcType="VARCHAR" property="introduction" />
     <result column="hobby" jdbcType="VARCHAR" property="hobby" />
     <result column="region" jdbcType="VARCHAR" property="region" />
@@ -20,6 +21,8 @@
     <result column="pic_two" jdbcType="VARCHAR" property="picTwo" />
     <result column="pic_three" jdbcType="VARCHAR" property="picThree" />
     <result column="pic_four" jdbcType="VARCHAR" property="picFour" />
+    <result column="message_board_pictures" jdbcType="VARCHAR" property="messageBoardPictures" />
+    <result column="message_boards" jdbcType="VARCHAR" property="messageBoards" />
     <result column="State" jdbcType="INTEGER" property="state" />
     <result column="struts" jdbcType="INTEGER" property="struts" />
     <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
@@ -29,11 +32,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, user_name, nick_name, telephone, email, password, birthday, network_avatar, sex, 
-    introduction, hobby, region, region_code, background, pic_one, pic_two, pic_three, 
-    pic_four, State, struts, ins_time, salt, type, subscribe
+    signature,introduction, hobby, region, region_code, background, pic_one, pic_two, pic_three,
+    pic_four, message_board_pictures, message_boards, State, struts, ins_time, salt, type, subscribe
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from my_user
     where id = #{id,jdbcType=INTEGER}
@@ -45,19 +48,19 @@
   <insert id="insert" parameterType="com.myplace.models.entity.MyUser">
     insert into my_user (id, user_name, nick_name, 
       telephone, email, password, 
-      birthday, network_avatar, sex, 
+      birthday, network_avatar, sex, signature,
       introduction, hobby, region, 
       region_code, background, pic_one, 
-      pic_two, pic_three, pic_four, 
+      pic_two, pic_three, pic_four, message_board_pictures, message_boards,
       State, struts, ins_time, 
       salt, type, subscribe
       )
     values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
       #{telephone,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{birthday,jdbcType=TIMESTAMP}, #{networkAvatar,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
-      #{introduction,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{signature,jdbcType=VARCHAR},#{introduction,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR},
       #{regionCode,jdbcType=VARCHAR}, #{background,jdbcType=VARCHAR}, #{picOne,jdbcType=VARCHAR}, 
-      #{picTwo,jdbcType=VARCHAR}, #{picThree,jdbcType=VARCHAR}, #{picFour,jdbcType=VARCHAR}, 
+      #{picTwo,jdbcType=VARCHAR}, #{picThree,jdbcType=VARCHAR}, #{picFour,jdbcType=VARCHAR},  #{messageBoardPictures,jdbcType=VARCHAR},  #{messageBoards,jdbcType=VARCHAR},
       #{state,jdbcType=INTEGER}, #{struts,jdbcType=INTEGER}, #{insTime,jdbcType=TIMESTAMP}, 
       #{salt,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{subscribe,jdbcType=INTEGER}
       )
@@ -92,6 +95,9 @@
       <if test="sex != null">
         sex,
       </if>
+      <if test="signature != null">
+        signature,
+      </if>
       <if test="introduction != null">
         introduction,
       </if>
@@ -118,6 +124,12 @@
       </if>
       <if test="picFour != null">
         pic_four,
+      </if>
+      <if test="messageBoardPictures != null">
+        message_board_pictures,
+      </if>
+      <if test="messageBoards != null">
+        message_boards,
       </if>
       <if test="state != null">
         State,
@@ -166,6 +178,9 @@
       <if test="sex != null">
         #{sex,jdbcType=INTEGER},
       </if>
+      <if test="signature != null">
+        #{signature,jdbcType=VARCHAR},
+      </if>
       <if test="introduction != null">
         #{introduction,jdbcType=VARCHAR},
       </if>
@@ -192,6 +207,12 @@
       </if>
       <if test="picFour != null">
         #{picFour,jdbcType=VARCHAR},
+      </if>
+      <if test="messageBoardPictures != null">
+        #{messageBoardPictures,jdbcType=VARCHAR},
+      </if>
+      <if test="messageBoards != null">
+        #{messageBoards,jdbcType=VARCHAR},
       </if>
       <if test="state != null">
         #{state,jdbcType=INTEGER},
@@ -240,6 +261,9 @@
       <if test="sex != null">
         sex = #{sex,jdbcType=INTEGER},
       </if>
+      <if test="signature != null">
+        signature = #{signature,jdbcType=VARCHAR},
+      </if>
       <if test="introduction != null">
         introduction = #{introduction,jdbcType=VARCHAR},
       </if>
@@ -266,6 +290,12 @@
       </if>
       <if test="picFour != null">
         pic_four = #{picFour,jdbcType=VARCHAR},
+      </if>
+      <if test="messageBoardPictures != null">
+        message_board_pictures = #{messageBoardPictures,jdbcType=VARCHAR},
+      </if>
+      <if test="messageBoards != null">
+        message_boards = #{messageBoards,jdbcType=VARCHAR},
       </if>
       <if test="state != null">
         State = #{state,jdbcType=INTEGER},
@@ -298,6 +328,7 @@
       birthday = #{birthday,jdbcType=TIMESTAMP},
       network_avatar = #{networkAvatar,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=INTEGER},
+      signature = #{signature,jdbcType=VARCHAR},
       introduction = #{introduction,jdbcType=VARCHAR},
       hobby = #{hobby,jdbcType=VARCHAR},
       region = #{region,jdbcType=VARCHAR},
@@ -307,6 +338,8 @@
       pic_two = #{picTwo,jdbcType=VARCHAR},
       pic_three = #{picThree,jdbcType=VARCHAR},
       pic_four = #{picFour,jdbcType=VARCHAR},
+      message_board_pictures = #{messageBoardPictures,jdbcType=VARCHAR},
+      message_boards = #{messageBoards,jdbcType=VARCHAR},
       State = #{state,jdbcType=INTEGER},
       struts = #{struts,jdbcType=INTEGER},
       ins_time = #{insTime,jdbcType=TIMESTAMP},
@@ -315,4 +348,48 @@
       subscribe = #{subscribe,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByType" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        user_name as userName,
+        nick_name as nickName,
+        telephone,
+        email,
+        birthday,
+        network_avatar as networkAvatar,
+        sex,
+        signature,
+        introduction,
+        hobby,
+        region,
+        region_code as regionCode,
+        background,
+        pic_one as picOne,
+        pic_two as picTwo,
+        pic_three as picThree,
+        pic_four as picFour
+    FROM
+        my_user
+    WHERE
+        type = #{type}
+  </select>
+
+  <select id="getMyMessageBoard" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        message_board_pictures as messageBoardPictures,
+        message_boards as messageBoards
+    FROM
+        my_user
+    WHERE
+        type = #{type}
+  </select>
+
+  <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        my_user
+    WHERE
+        email = #{email}
+  </select>
 </mapper>

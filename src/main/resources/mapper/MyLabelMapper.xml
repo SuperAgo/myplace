@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyLabel">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="tab_grade" jdbcType="INTEGER" property="tabGrade" />
     <result column="label_name" jdbcType="VARCHAR" property="labelName" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="background" jdbcType="VARCHAR" property="background" />
@@ -13,7 +14,7 @@
     <result column="url" jdbcType="VARCHAR" property="url" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, parent_id, label_name, remark, background, ins_user, ins_time, sort, url
+    id, parent_id,tab_grade, label_name, remark, background, ins_user, ins_time, sort, url
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -26,11 +27,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.myplace.models.entity.MyLabel">
-    insert into my_label (id, parent_id, label_name,
+    insert into my_label (id, parent_id, tab_grade, label_name,
       remark, background, ins_user,
       ins_time, sort, url
       )
-    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{labelName,jdbcType=VARCHAR},
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{tabGrade,jdbcType=INTEGER}, #{labelName,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}, #{background,jdbcType=VARCHAR}, #{insUser,jdbcType=INTEGER},
       #{insTime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}
       )
@@ -43,6 +44,9 @@
       </if>
       <if test="parentId != null">
         parent_id,
+      </if>
+      <if test="tabGrade != null">
+        tab_grade,
       </if>
       <if test="labelName != null">
         label_name,
@@ -73,6 +77,9 @@
       <if test="parentId != null">
         #{parentId,jdbcType=INTEGER},
       </if>
+      <if test="tabGrade != null">
+        #{tabGrade,jdbcType=INTEGER},
+      </if>
       <if test="labelName != null">
         #{labelName,jdbcType=VARCHAR},
       </if>
@@ -102,6 +109,9 @@
       <if test="parentId != null">
         parent_id = #{parentId,jdbcType=INTEGER},
       </if>
+      <if test="tabGrade != null">
+        tab_grade = #{tabGrade,jdbcType=INTEGER},
+      </if>
       <if test="labelName != null">
         label_name = #{labelName,jdbcType=VARCHAR},
       </if>
@@ -129,6 +139,7 @@
   <update id="updateByPrimaryKey" parameterType="com.myplace.models.entity.MyLabel">
     update my_label
     set parent_id = #{parentId,jdbcType=INTEGER},
+      tab_grade = #{tabGrade,jdbcType=INTEGER},
       label_name = #{labelName,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       background = #{background,jdbcType=VARCHAR},
@@ -148,18 +159,140 @@
     sort
     from my_label
     where parent_id = #{parentId,jdbcType=INTEGER}
+    and tab_grade = 2
+    order by id
+  </select>
+
+  <select id="getLabelByGradeId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    select
+    id,
+    label_name as labelName,
+    remark,
+    url,
+    sort
+    from my_label
+    where tab_grade = #{tabGrade,jdbcType=INTEGER}
     order by id
   </select>
 
   <select id="getSonLabelList" resultType="java.util.HashMap">
     SELECT
-        id,
-        label_name as labelName
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url as tabUrl
     FROM
-        my_label
+        my_label as ml
     WHERE
-        parent_id != 0
+        ml.tab_grade = 2
     ORDER BY
-        id
+        ml.id
+  </select>
+
+  <select id="getBlogTabByBlogId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        mb.title AS tabName,
+        mb.id AS tabId,
+        'detail' as tabUrl
+    FROM
+        my_blog AS mb
+    WHERE
+        mb.id = #{blogId}
+  </select>
+
+  <select id="getTabByBlogId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url as tabUrl
+    FROM
+        my_label AS ml
+    JOIN my_blog as mb ON mb.label = ml.id
+    WHERE
+        mb.id = #{blogId}
+  </select>
+
+  <select id="getTabByTabId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url as tabUrl
+    FROM
+        my_label AS ml
+    WHERE
+        ml.id = #{tabId}
+  </select>
+
+  <select id="getTabBySonId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url as tabUrl
+    FROM
+        my_label AS ml
+        JOIN my_label AS ml2 ON ml2.parent_id=ml.id
+    WHERE
+        ml2.id = #{tabId}
+  </select>
+
+  <select id="getTabByTabUrl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    SELECT
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url as tabUrl
+    FROM
+        my_label AS ml
+    WHERE
+        ml.url = #{url}
+        <if test="tabGrade !=null and tabGrade !=''">
+          and ml.tab_grade = #{tabGrade}
+        </if>
+  </select>
+
+  <select id="selectMyLabelByPage" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    SELECT
+      ml.id as tabId,
+      ml.label_name AS labelName,
+      ml.background,
+      ml.url AS tabUrl,
+      IFNULL(mc.num,0) AS num
+    FROM
+        my_label AS ml
+    LEFT JOIN (
+      SELECT
+      COUNT(id) AS num,
+      label
+      FROM
+      my_blog
+      GROUP BY
+      label
+      ) mc ON mc.label = ml.id
+    WHERE
+        1 = 1
+    <if test="tabId != null and tabId != ''">
+      and ml.parent_id = #{tabId}
+    </if>
+    <if test="labelName != null and labelName != ''">
+      and ml.label_name LIKE '%#{labelName}%'
+    </if>
+    ORDER BY
+    ml.sort DESC
+  </select>
+
+  <select id="selectArticleSonLabels" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+        ml.label_name AS tabName,
+        ml.id AS tabId,
+        ml.url AS tabUrl
+    FROM
+        my_label AS ml
+    WHERE
+        ml.id IN (
+            SELECT
+                label_id
+            FROM
+                my_article_label
+            WHERE
+                blog_id = #{blogId}
+        )
   </select>
 </mapper>

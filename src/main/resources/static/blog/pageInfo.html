@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="post-pagination d-flex justify-content-center" th:fragment="myPage">
+    <a th:onclick="getPage([[${PageInfo.prePage}]]);" th:if="${PageInfo.pageNum} > 1 "><i
+            class="fa fa-angle-left"></i></a>
+    <a th:each="page:${PageInfo.navigatepageNums}" th:onclick="getPage([[${page}]]);"
+       th:class="${page} eq ${PageInfo.pageNum} ? 'current' : ''" th:text="${page}">1</a>
+    <a th:onclick="getPage([[${PageInfo.nextPage}]]);" th:if="${PageInfo.pageNum} < ${PageInfo.nextPage}"><i class="fa fa-angle-right"></i></a>
+</div>
+</body>
+</html>
