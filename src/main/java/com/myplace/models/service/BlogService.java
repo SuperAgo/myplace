@@ -3,6 +3,7 @@ package com.myplace.models.service;
 
 import com.myplace.common.page.RequestModel;
 import com.myplace.common.page.ResponseModel;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 public interface BlogService {
@@ -16,13 +17,25 @@ public interface BlogService {
 
     ModelAndView getAbout();
 
-    ModelAndView getContact();
+    ModelAndView getContact(Integer page);
 
     ResponseModel getClassificationArticles(Integer labelId);
 
-    ModelAndView getScarch(Integer page,String title);
+    ModelAndView getSearch(Integer page,String title);
 
     ResponseModel getSubscribe(String email);
 
     ResponseModel setleaveAMessage(RequestModel requestModel);
+
+    ModelAndView getMain();
+
+    ResponseModel setCommont(RequestModel requestModel);
+
+    ModelAndView getError();
+
+    ModelAndView getError404();
+
+    ModelAndView getNewCommont(Integer blogId);
+
+    ModelAndView getNewContact(Integer page);
 }

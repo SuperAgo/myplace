@@ -1,8 +1,29 @@
 package com.myplace.models.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class MyLeavingMessage {
+    private List<MyLeavingMessage> sonList;
+
+    public List<MyLeavingMessage> getSonList() {
+        return sonList;
+    }
+
+    public void setSonList(List<MyLeavingMessage> sonList) {
+        this.sonList = sonList;
+    }
+
+    private String parentName;
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
     /**
      * Id
      */

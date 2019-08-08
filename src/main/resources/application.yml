@@ -17,9 +17,11 @@ spring:
       my: debug
     file: logs/admin-server.log
     maxsize: 30MB
+  main:
+    allow-bean-definition-overriding: true #当遇到同样名字的时候，是否允许覆盖注册
   mvc:
     static-path-pattern: /**
-    prefix: /static/blog/
+#    prefix: /static/blog/,/static/console/
     suffix: .html
   jackson:
     date-format: yyyy年MM月dd日

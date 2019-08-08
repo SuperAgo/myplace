@@ -4,15 +4,14 @@
     <title>FreeBlog</title>
 </head>
 <body>
-<div th:replace="header :: myheader"></div>
-
 <!-- Page title -->
 <div class="page-title">
     <div class="container">
         <h2 th:text="${blogDetail.title}">Blog Details: Standard</h2>
         <ul class="nav">
             <li th:each="blogTab:${blogTabs}">
-                <a th:if="${blogTab.tabUrl} ne 'detail'" th:href="@{${blogTab.tabUrl}+'?tabId='+${blogTab.tabId}}" th:text="${blogTab.tabName}"></a>
+                <a th:if="${blogTab.tabUrl} ne 'detail'"
+                   th:onclick="getURL([[${blogTab.tabUrl}]],[[${blogTab.tabId}]]);" th:text="${blogTab.tabName}"></a>
                 <a th:if="${blogTab.tabUrl} eq 'detail'" th:text="${blogTab.tabName}"></a>
             </li>
         </ul>
@@ -24,161 +23,136 @@
     <div class="row">
         <div class="col-lg-8 pb-80">
             <div class="post-details-cover">
-                <!-- Post Thumbnail -->
-                <div class="post-thumb-cover">
-                    <div class="post-thumb">
-                        <img src="../images/blog/4.jpg" alt="" class="img-fluid">
-                    </div>
-                    <!-- Post Meta Info -->
-                    <div class="post-meta-info">
-                        <!-- Category -->
-                        <p class="cats">
-                            <a href="#" th:text="${blogDetail.labelName}"></a>
-                        </p>
-
-                        <!-- Title -->
-                        <div class="title">
-                            <h2 th:text="${blogDetail.title}"></h2>
+                <div id="needRefesh" th:fragment="detail_refresh">
+                    <!-- Post Thumbnail -->
+                    <div class="post-thumb-cover">
+                        <div class="post-thumb">
+                            <img src="../images/blog/4.jpg" alt="" class="img-fluid">
                         </div>
+                        <!-- Post Meta Info -->
+                        <div class="post-meta-info">
+                            <!-- Category -->
+                            <p class="cats">
+                                <a href="#" th:text="${blogDetail.labelName}"></a>
+                            </p>
 
-                        <!-- Meta -->
-                        <ul class="nav meta align-items-center">
-                            <li class="meta-author">
-                                <img th:src="${blogDetail.networkAvatar}" alt="" class="img-fluid">
-                                <a href="#">[[${blogDetail.nickName}]]</a>
+                            <!-- Title -->
+                            <div class="title">
+                                <h2 th:text="${blogDetail.title}"></h2>
+                            </div>
+
+                            <!-- Meta -->
+                            <ul class="nav meta align-items-center">
+                                <li class="meta-author">
+                                    <img th:src="${blogDetail.networkAvatar}" alt="" class="img-fluid">
+                                    <a href="#">[[${blogDetail.nickName}]]</a>
+                                </li>
+                                <li class="meta-date"><a href="#"
+                                                         th:text="${#dates.format(blogDetail.insTime,'yyyy年MM月dd日')}"></a>
+                                </li>
+                                <li class="meta-reader"><a th:title="${blogDetail.reader}+'已读'"><i class="fa fa-eye"></i>
+                                    [[${blogDetail.reader}]]</a></li>
+                                <li class="meta-comments"><a th:title="${blogDetail.comments}+'评论'" href="#commonts"><i class="fa fa-comment"></i>
+                                    [[${blogDetail.comments}]]</a></li>
+                            </ul>
+                        </div>
+                        <!-- End of Post Meta Info -->
+                    </div>
+                    <!-- End oF Post Thumbnail -->
+
+                    <!-- Post Content -->
+                    <div class="post-content-cover my-drop-cap">
+                        <p th:text="${blogDetail.content}">
+
+                        </p>
+                    </div>
+                    <!-- End of Post Content -->
+
+                    <!-- Tags -->
+                    <div class="post-all-tags">
+                        <a th:onclick="getURL([[${articleSonLabel.tabUrl}]],[[${articleSonLabel.tabId}]]);"
+                           th:each="articleSonLabel:${articleSonLabels}" th:text="${articleSonLabel.tabName}">Fashion</a>
+                    </div>
+                    <!-- End of Tags -->
+
+                    <!-- 728 ad -->
+                    <div class="pt-40 pb-40 biz-ad">
+                        <a href="#"><img src="../images/ad-728.png" alt="" class="img-fluid"></a>
+                    </div>
+                    <!-- End of 728 ad -->
+
+                    <!-- Comments -->
+                    <a id="commonts"></a>
+                    <button class="btn btn-comment collapsed" type="button" data-toggle="collapse"
+                            data-target="#commentToggle"
+                            aria-expanded="false" aria-controls="commentToggle" th:if="${commentList.size()>0}">
+                        热门评论 ([[${blogDetail.comments}]])
+                    </button>
+                    <div class="collapse" id="commentToggle">
+                        <ul class="post-all-comments">
+                            <li class="single-comment-wrapper" th:each="comment :${commentList}">
+                                <!-- Single Comment -->
+                                <div class="single-post-comment">
+                                    <!-- Author Image -->
+                                    <div class="comment-author-image">
+                                        <img src="../images/blog/post/author-1.jpg" alt="" class="img-fluid">
+                                    </div>
+                                    <!-- Comment Content -->
+                                    <div class="comment-content">
+                                        <div class="comment-author-name">
+                                            <h6>[[${comment.name}]]</h6> <span> [[${#dates.format(comment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
+                                        </div>
+                                        <p>[[${comment.message}]]</p>
+                                        <a href="#setCommon" class="reply-btn"
+                                           th:onclick="reply([[${comment.id}]]);">回复</a>
+                                    </div>
+                                </div>
+                                <!-- End of Single Comment -->
+                                <ul class="children" th:if="${comment.sonList.size() > 0}">
+                                    <li class="single-comment-wrapper"  th:each="sonComment :${comment.sonList}">
+                                        <!-- Single Comment -->
+                                        <div class="single-post-comment">
+                                            <!-- Author Image -->
+                                            <div class="comment-author-image">
+                                                <img src="../images/blog/post/author-1-1.jpg" alt="" class="img-fluid">
+                                            </div>
+                                            <!-- Comment Content -->
+                                            <div class="comment-content">
+                                                <div class="comment-author-name">
+                                                    <h6>[[${sonComment.name}]]</h6><span th:if="${sonComment.parentId != null}">回复：</span>
+                                                    <h6 th:if="${sonComment.parentId != null}">[[${sonComment.parentName}]]</h6> <span> [[${#dates.format(sonComment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
+                                                </div>
+                                                <p>[[${sonComment.message}]]</p>
+                                                <a href="#setCommon" class="reply-btn"
+                                                   th:onclick="reply([[${comment.id}]]);">回复</a>
+                                            </div>
+                                        </div>
+                                        <!-- End of Single Comment -->
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="meta-date"><a href="#" th:text="${#dates.format(blogDetail.insTime,'yyyy年MM月dd日')}"></a></li>
-                            <li class="meta-comments"><a href="#commonts"><i class="fa fa-comment"></i> [[${blogDetail.comments}]]</a></li>
                         </ul>
                     </div>
-                    <!-- End of Post Meta Info -->
+                    <!-- End of Comments -->
                 </div>
-                <!-- End oF Post Thumbnail -->
-
-                <!-- Post Content -->
-                <div class="post-content-cover my-drop-cap">
-                    <p th:text="${blogDetail.content}">
-
-                    </p>
-                </div>
-                <!-- End of Post Content -->
-
-                <!-- Tags -->
-                <div class="post-all-tags">
-                    <a th:onclick="getURL([[${articleSonLabel.tabUrl}]],[[${articleSonLabel.tabId}]]);" th:each="articleSonLabel:${articleSonLabels}" th:text="${articleSonLabel.tabName}">Fashion</a>
-                </div>
-                <!-- End of Tags -->
-
-                <!-- 728 ad -->
-                <div class="pt-40 pb-40 biz-ad">
-                    <a href="#"><img src="../images/ad-728.png" alt="" class="img-fluid"></a>
-                </div>
-                <!-- End of 728 ad -->
-
-                <!-- Comments -->
-                <a id="commonts"></a>
-                <button class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle"
-                        aria-expanded="false" aria-controls="commentToggle">
-                    热门评论 ([[${blogDetail.comments}]])
-                </button>
-                <div class="collapse show" id="commentToggle">
-                    <ul class="post-all-comments">
-                        <li class="single-comment-wrapper">
-                            <!-- Single Comment -->
-                            <div class="single-post-comment">
-                                <!-- Author Image -->
-                                <div class="comment-author-image">
-                                    <img src="../images/blog/post/author-1.jpg" alt="" class="img-fluid">
-                                </div>
-                                <!-- Comment Content -->
-                                <div class="comment-content">
-                                    <div class="comment-author-name">
-                                        <h6>Don Norman</h6> <span> 5 Jan 2019 at 6:40 pm </span>
-                                    </div>
-                                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now
-                                        back sussex merely you. It possible no husbands jennings offended.</p>
-                                    <a href="#setCommon" class="reply-btn">Reply</a>
-                                </div>
-                            </div>
-                            <!-- End of Single Comment -->
-                            <ul class="children">
-                                <li class="single-comment-wrapper">
-                                    <!-- Single Comment -->
-                                    <div class="single-post-comment">
-                                        <!-- Author Image -->
-                                        <div class="comment-author-image">
-                                            <img src="../images/blog/post/author-1-1.jpg" alt="" class="img-fluid">
-                                        </div>
-                                        <!-- Comment Content -->
-                                        <div class="comment-content">
-                                            <div class="comment-author-name">
-                                                <h6>Helen Sharp</h6> <span> 5 Jan 2019 at 6:58 pm </span>
-                                            </div>
-                                            <p>On recommend tolerably my belonging or am. Mutual has cannot back beauty
-                                                indeed now back sussex merely you. </p>
-                                            <a href="#" class="reply-btn">Reply</a>
-                                        </div>
-                                    </div>
-                                    <!-- End of Single Comment -->
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="single-comment-wrapper">
-                            <!-- Single Comment -->
-                            <div class="single-post-comment">
-                                <!-- Author Image -->
-                                <div class="comment-author-image">
-                                    <img src="../images/blog/post/author-2.jpg" alt="" class="img-fluid">
-                                </div>
-                                <!-- Comment Content -->
-                                <div class="comment-content">
-                                    <div class="comment-author-name">
-                                        <h6>Pamela Pavliscak</h6> <span> 5 Jan 2019 at 6:48 pm </span>
-                                    </div>
-                                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now
-                                        back sussex merely you. It possible no husbands jennings offended.</p>
-                                    <a href="#" class="reply-btn">Reply</a>
-                                </div>
-                            </div>
-                            <!-- End of Single Comment -->
-                        </li>
-                        <li class="single-comment-wrapper">
-                            <!-- Single Comment -->
-                            <div class="single-post-comment">
-                                <!-- Author Image -->
-                                <div class="comment-author-image">
-                                    <img src="../images/blog/post/author-3.jpg" alt="" class="img-fluid">
-                                </div>
-                                <!-- Comment Content -->
-                                <div class="comment-content">
-                                    <div class="comment-author-name">
-                                        <h6>Jerrard Spool</h6> <span> 5 Jan 2019 at 6:52 pm </span>
-                                    </div>
-                                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now
-                                        back sussex merely you. It possible no husbands jennings offended.</p>
-                                    <a href="#" class="reply-btn">Reply</a>
-                                </div>
-                            </div>
-                            <!-- End of Single Comment -->
-                        </li>
-                    </ul>
-                </div>
-                <!-- End of Comments -->
 
                 <!-- Comment Form -->
                 <div class="post-comment-form-cover">
                     <a id="setCommon"></a>
                     <h3>你的评论</h3>
-                    <form class="comment-form">
+                    <form class="comment-form" id="commontForm">
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Name">
+                                <input type="hidden" id="blogId" th:value="${blogDetail.id}">
+                                <input type="hidden" id="parentId">
+                                <input type="text" class="form-control" placeholder="Name" id="userName">
                             </div>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Email">
+                                <input type="text" class="form-control" placeholder="Email" id="userEmail">
                             </div>
                             <div class="col-md-12">
-                                <textarea class="form-control" placeholder="Write your comment"></textarea>
+                                <textarea class="form-control" placeholder="Write your comment"
+                                          id="userMessage"></textarea>
                             </div>
                             <div class="col-md-12">
                                 <button class="btn btn-primary">Submit</button>

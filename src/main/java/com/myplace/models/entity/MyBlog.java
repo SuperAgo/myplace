@@ -37,6 +37,11 @@ public class MyBlog {
     private Integer id;
 
     /**
+     * banner
+     */
+    private String banner;
+
+    /**
      * 文章标题
      */
     private String title;
@@ -110,6 +115,20 @@ public class MyBlog {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * banner
+     */
+    public String getBanner() {
+        return banner;
+    }
+
+    /**
+     * banner
+     */
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
 
     /**

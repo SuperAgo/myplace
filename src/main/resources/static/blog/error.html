@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="header :: headInfo">
+    <title>FreeBlog</title>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+
+        <!-- Nav Search Box -->
+        <div class="nav-search-box">
+            <form class="search-form" id="titleErrorSearch" method="post"  th:fragment="errorForm">
+                <div class="input-group">
+                    <input type="text" name="title" id="title" class="form-control" placeholder="eg. feel the love and …">
+                    <span class="b-line"></span>
+                    <span class="b-line-under"></span>
+                    <div class="input-group-append">
+                        <button type="button" class="btn">
+                            <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- End of Nav Search Box -->
+
+        <header class="header">
+            <div class="header-fixed is-sticky fadeInDown animated">
+                <div class="container-fluid pl-120 pr-120 position-relative">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <!-- Logo -->
+                            <div class="logo">
+                                <a href="#"><img src="../images/logo.png" alt="" class="img-fluid"></a>
+                            </div>
+                            <!-- End of Logo -->
+                        </div>
+
+                        <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
+                            <!-- Nav Menu -->
+                            <div class="nav-menu-cover">
+                                <ul class="nav nav-menu"><!-- -->
+                                    <li th:each="tabLabel:${myLabelList}"
+                                        th:class="${tabLabel.sonLabelList.size()} > 0 ? 'menu-item-has-children' : 'menu-item-has-not-children'">
+                                        <a class="parentBtn" th:onclick="getTrueURL([[${tabLabel.url}]],[[${tabLabel.id}]]);"
+                                           th:text="${tabLabel.labelName}"></a>
+                                        <ul class="sub-menu" th:if="${tabLabel.sonLabelList.size()} > 0">
+                                            <li th:each="sonTab:${tabLabel.sonLabelList}"><a class="sonBtn"
+                                                                                             th:onclick="getTrueURL([[${sonTab.url}]],[[${sonTab.id}]]);"
+                                                                                             th:text="${sonTab.labelName}"></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End of Nav Menu -->
+
+                            <!-- Mobile Menu -->
+                            <div class="mobile-menu-cover">
+                                <ul class="nav mobile-nav-menu">
+                                    <li class="search-toggle-open">
+                                        <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                                    </li>
+                                    <li class="search-toggle-close hide">
+                                        <img src="../images/close.svg" alt="" class="img-fluid">
+                                    </li>
+                                    <li class="nav-menu-toggle">
+                                        <img src="../images/menu-toggler.svg" alt="" class="img-fluid svg">
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End of Mobile Menu -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- 内容主体区域 -->
+    <div class="container container-404 text-center d-flex align-items-center">
+        <div class="data">
+            <h1>404</h1>
+            <h2>网页未找到!</h2>
+            <p>您要查找的页面已被移动、删除、重命名或不存在。请检查网址或转到 <a th:onclick="getTrueURL('/free/blog',1);">主页.</a></p>
+            <form class="search-form" id="errorSearch" method="post"  th:fragment="errorForm">
+                <div class="input-group">
+                    <input type="text" name="title" id="errorTitle" class="form-control" placeholder="">
+                    <span class="b-line"></span>
+                    <span class="b-line-under"></span>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn">
+                            <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="../layui/layui.js"></script>
+<!-- JS Files -->
+
+<!-- ==== JQuery 1.12.1 js file ==== -->
+<script src="../js/jQuery/jquery-3.4.1.js"></script>
+
+<!-- ==== Bootstrap js file ==== -->
+<script src="../js/bootstrap.bundle.min.js"></script>
+
+<!-- ==== layui js file ==== -->
+<script src="../layui/layui.js"></script>
+
+<!-- ==== Owl Carousel ==== -->
+<script src="../plugins/owl-carousel/owl.carousel.min.js"></script>
+
+<!-- ==== Magnific Popup ==== -->
+<script src="../plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- ==== Script js file ==== -->
+<script src="../js/scripts.js"></script>
+
+<!-- ==== Custom js file ==== -->
+<script src="../js/custom.js"></script>
+</body>
+</html>

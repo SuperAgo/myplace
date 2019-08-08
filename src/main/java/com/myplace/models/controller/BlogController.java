@@ -6,16 +6,23 @@ import com.myplace.models.service.BlogService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/blog")
+@RequestMapping("/free")
 public class BlogController {
     @Autowired
     private BlogService blogService;
 
     @ApiOperation(value = "主页")
+    @RequestMapping("/blog")
+    public ModelAndView getMain(){
+        return blogService.getMain();
+    }
+
+    @ApiOperation(value = "主页内容")
     @RequestMapping("/index")
     public ModelAndView getIndex(){
         return blogService.getIndex();
@@ -28,9 +35,9 @@ public class BlogController {
     }
 
     @ApiOperation(value = "搜索")
-    @PostMapping("/scarch")
-    public ModelAndView getScarch(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,@Param("title") String title){
-        return blogService.getScarch(page,title);
+    @PostMapping("/search")
+    public ModelAndView getSearch(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,@Param("title") String title){
+        return blogService.getSearch(page,title);
     }
 
     @ApiOperation(value = "关于博主")
@@ -41,8 +48,14 @@ public class BlogController {
 
     @ApiOperation(value = "给我留言")
     @PostMapping("/contact")
-    public ModelAndView getContact(){
-        return blogService.getContact();
+    public ModelAndView getContact(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page){
+        return blogService.getContact(page);
+    }
+
+    @ApiOperation(value = "刷新留言")
+    @PostMapping("/getNewContact")
+    public ModelAndView getNewContact(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page){
+        return blogService.getNewContact(page);
     }
 
     @ApiOperation(value = "博客详情")
@@ -73,5 +86,29 @@ public class BlogController {
     @PostMapping("/leaveAMessage")
     public ResponseModel setleaveAMessage(RequestModel requestModel){
         return blogService.setleaveAMessage(requestModel);
+    }
+
+    @ApiOperation(value = "评论")
+    @PostMapping("/setCommont")
+    public ResponseModel setCommont(RequestModel requestModel){
+        return blogService.setCommont(requestModel);
+    }
+
+    @ApiOperation(value = "刷新评论")
+    @PostMapping("/getNewCommont")
+    public ModelAndView getNewCommont(@Param("blogId") Integer blogId){
+        return blogService.getNewCommont(blogId);
+    }
+
+    @ApiOperation(value = "错误")
+    @RequestMapping("/error")
+    public ModelAndView getError(){
+        return blogService.getError();
+    }
+
+    @ApiOperation(value = "错误")
+    @RequestMapping("/getError404")
+    public ModelAndView getError404(){
+        return blogService.getError404();
     }
 }

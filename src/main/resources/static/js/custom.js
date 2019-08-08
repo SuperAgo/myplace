@@ -7,7 +7,7 @@
  * @param params
  */
 function postCurrent(url, params) {
-    var form = $("<form method='post'></form>");
+    var form = $("<form method='post' target='my-iframe'></form>");
     var input;
     form.attr({"action": url});
     if (params) {
@@ -19,6 +19,8 @@ function postCurrent(url, params) {
         });
     }
     $(document.body).append(form);
+    localStorage.setItem("url", url);
+    localStorage.setItem("params", JSON.stringify(params));
     form.submit();
 }
 
@@ -26,14 +28,14 @@ function getDetail(id) {
     var params = {
         blogId: id
     }
-    postCurrent('/blog/detail', params)
+    postCurrent('/free/detail', params)
 }
 
 function getLabel(id) {
     var params = {
         tabId: id
     }
-    postCurrent('/blog/label', params)
+    postCurrent('/free/label', params)
 }
 
 function getURL(url, id) {
@@ -41,6 +43,15 @@ function getURL(url, id) {
         tabId: id
     }
     postCurrent(url, params)
+}
+
+function getTrueURL(url, id) {
+    var params = {
+        tabId: id
+    }
+    localStorage.setItem("url", url);
+    localStorage.setItem("params", JSON.stringify(params));
+    window.location.href = '/free/blog';
 }
 
 function getPage(page) {
@@ -56,7 +67,7 @@ function getPage(page) {
 
 function labSelect() {
     var labelId = $("#sonLabelSelected").val();
-    $.post('/blog/getClassificationArticles',
+    $.post('/free/getClassificationArticles',
         {
             labelId: labelId
         }, function (data) {
@@ -92,7 +103,7 @@ $("#subForm").on('submit', function (e) {
             return false;
         }
     }
-    $.post('/blog/subscribe',
+    $.post('/free/subscribe',
         {
             email: email
         }, function (data) {
@@ -114,14 +125,16 @@ $("#leaveForm").on('submit', function (e) {
     var name = $("#userName").val();
     var email = $("#userEmail").val();
     var message = $("#userMessage").val();
+    var parentId = $("#parentId").val();
+    var page = $(".current").html();
     if (!name || !email || !message) {
-        if(!name){
+        if (!name) {
             layer.msg('请输入你的名字!');
             return false;
-        }else if(!email){
+        } else if (!email) {
             layer.msg('请输入邮箱!');
             return false;
-        }else{
+        } else {
             layer.msg('请输入留言!');
             return false;
         }
@@ -131,17 +144,41 @@ $("#leaveForm").on('submit', function (e) {
             return false;
         }
     }
-    $.post('/blog/leaveAMessage',
-        {
-            name: name,
-            email: email,
-            message: message,
-        }, function (data) {
+    $.ajax({
+        type: 'POST',
+        url: '/free/leaveAMessage',
+        data: {
+            params:
+                {
+                    name: name,
+                    parentId: parentId,
+                    email: email,
+                    message: message
+                }
+        },
+        async: false,
+        success: function (data) {
             if (data.code == 0) {
-                layer.msg(data.msg, function () {
-                    $("#userName").val("");
-                    $("#userEmail").val("");
-                    $("#userMessage").val("");
+                $.ajax({
+                    type: 'POST',
+                    url: '/free/getNewContact',
+                    data: {
+                        page: page
+                    },
+                    async: false,
+                    success: function (data) {
+                        $(".contact-cover").html(data);
+                        $("#userName").val("");
+                        $("#userEmail").val("");
+                        $("#userMessage").val("");
+                        $("#parentId").val("");
+                    },
+                });
+                var msg = data.msg;
+                if (parentId) {
+                    msg = "回复成功！";
+                }
+                layer.msg(msg, function () {
                     layer.closeAll();
                 })
             } else {
@@ -149,5 +186,129 @@ $("#leaveForm").on('submit', function (e) {
                     layer.closeAll();
                 })
             }
-        })
+        },
+    });
+})
+
+function reply(mid) {
+    $("#parentId").val(mid);
+}
+
+$("#commontForm").on('submit', function (e) {
+    e.preventDefault();
+    var name = $("#userName").val();
+    var email = $("#userEmail").val();
+    var message = $("#userMessage").val();
+    var blogId = $("#blogId").val();
+    var parentId = $("#parentId").val();
+    if (!name || !email || !message) {
+        if (!name) {
+            layer.msg('请输入你的名字!');
+            return false;
+        } else if (!email) {
+            layer.msg('请输入邮箱!');
+            return false;
+        } else {
+            layer.msg('请输入留言!');
+            return false;
+        }
+    } else {
+        if (/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email) == false) {
+            layer.msg('请输入正确的邮箱!');
+            return false;
+        }
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/free/setCommont',
+        data: {
+            params:
+                {
+                    name: name,
+                    blogId: blogId,
+                    parentId: parentId,
+                    email: email,
+                    message: message
+                }
+        },
+        async: false,
+        success: function (data) {
+            if (data.code == 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/free/getNewCommont',
+                    data: {
+                        blogId: blogId
+                    },
+                    async: false,
+                    success: function (data) {
+                        $("#needRefesh").html(data);
+                        $(".btn btn-comment").removeClass("collapsed");
+                        $(".collapse").addClass("show");
+                        $("#userName").val("");
+                        $("#userEmail").val("");
+                        $(" #userMessage").val("");
+                        $("#parentId").val("");
+                    },
+                });
+                layer.msg(data.msg, function () {
+                    layer.closeAll();
+                })
+            } else {
+                layer.msg(data.msg, function () {
+                    layer.closeAll();
+                })
+            }
+        },
+    });
+
+})
+
+function hideImg(a) {
+    $(a).hide();
+}
+
+$("#search").on('submit', function (e) {
+    e.preventDefault();
+    var title = $("#title").val();
+    if (!title) {
+        return false;
+    }
+    var params = {
+        title: title
+    }
+    postCurrent('/free/search', params);
+    $('.search-toggle-open').toggleClass('hide');
+    $('.search-toggle-close').toggleClass('hide');
+    $('.nav-search-box').toggleClass('show');
+})
+
+$("#errorSearch").on('submit', function (e) {
+    e.preventDefault();
+    var title = $("#title").val();
+    var url = "/free/search";
+    var params = {
+        title: title
+    }
+    if (!title) {
+        url = '/free/blog';
+    }
+    localStorage.setItem("url", url);
+    localStorage.setItem("params", JSON.stringify(params));
+    window.location.href = '/free/blog';
+})
+
+$("#titleErrorSearch").on('submit', function (e) {
+    e.preventDefault();
+    var title = $("#title").val();
+    var url = "/free/search";
+    var params = {
+        title: title
+    }
+    if (!title) {
+        url = '/free/blog';
+    }
+    localStorage.setItem("url", url);
+    localStorage.setItem("params", JSON.stringify(params));
+    window.location.href = '/free/blog';
 })

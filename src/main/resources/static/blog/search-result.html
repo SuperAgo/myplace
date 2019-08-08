@@ -4,12 +4,10 @@
     <title>FreeBlog</title>
 </head>
 <body>
-<div th:replace="header :: myheader"></div>
-
 <!-- Page title -->
 <div class="page-title search-title">
     <div class="container">
-        <h2><span>Search results for:</span> [[${params}]] </h2>
+        <h2><span>搜索结果:</span> [[${params}]] </h2>
     </div>
 </div>
 <!-- End of Page title -->
@@ -51,40 +49,7 @@
 
 </div>
 <!-- Newsletter -->
-<section class="newsletter-cover">
-    <!-- Overlay -->
-    <div class="nl-bg-ol"></div>
-    <div class="container">
-        <div class="newsletter pt-80 pb-80">
-            <!-- Section title -->
-            <div class="section-title text-center">
-                <h2>Subscribe Our Newsletter</h2>
-            </div>
-            <!-- End of Section title -->
-            <div class="row">
-                <div class="col-lg-8 offset-lg-2">
-                    <!-- Newsletter Form -->
-                    <form action="subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d" method="post"
-                          novalidate>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter Your Email">
-                            <div class="input-group-append">
-                                <button class="btn btn-default">Submit</button>
-                            </div>
-                        </div>
-                        <p class="checkbox-cover d-flex justify-content-center">
-                            <label> I've read and accept the <a href="#"> Privacy Policy </a>
-                                <input type="checkbox">
-                                <span class="checkmark"></span>
-                            </label>
-                        </p>
-                    </form>
-                    <!-- End of Newsletter Form -->
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<div th:replace="footer :: newsletter"></div>
 <!-- End of Newsletter -->
 
 <div th:replace="footer :: myfooter"></div>

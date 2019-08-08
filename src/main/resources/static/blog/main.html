@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>FreeBlog</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
+
+    <!--==== Google Fonts ====-->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+          rel="stylesheet">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../layui/css/layui.css">
+
+    <!--==== Bootstrap css file ====-->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <!--==== Font-Awesome css file ====-->
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+
+    <!--==== Animate CSS ====-->
+    <link rel="stylesheet" href="../plugins/animate/animate.min.css">
+
+    <!--==== Owl Carousel ====-->
+    <link rel="stylesheet" href="../plugins/owl-carousel/owl.carousel.min.css">
+
+    <!--==== Magnific Popup ====-->
+    <link rel="stylesheet" href="../plugins/magnific-popup/magnific-popup.css">
+
+    <!--==== Style css file ====-->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!--==== Responsive css file ====-->
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <!--==== Custom css file ====-->
+    <link rel="stylesheet" href="../css/custom.css">
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+
+        <!-- Nav Search Box -->
+        <div class="nav-search-box">
+            <form id="search">
+                <div class="input-group">
+                    <input type="text" name="title" id="title" class="form-control" placeholder="eg. feel the love and …">
+                    <span class="b-line"></span>
+                    <span class="b-line-under"></span>
+                    <div class="input-group-append">
+                        <button type="button" class="btn">
+                            <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- End of Nav Search Box -->
+
+        <header class="header">
+            <div class="header-fixed is-sticky fadeInDown animated">
+                <div class="container-fluid pl-120 pr-120 position-relative">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <!-- Logo -->
+                            <div class="logo">
+                                <a href="#"><img src="../images/logo.png" alt="" class="img-fluid"></a>
+                            </div>
+                            <!-- End of Logo -->
+                        </div>
+
+                        <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
+                            <!-- Nav Menu -->
+                            <div class="nav-menu-cover">
+                                <ul class="nav nav-menu"><!-- -->
+                                    <li th:each="tabLabel:${myLabelList}"
+                                        th:class="${tabLabel.sonLabelList.size()} > 0 ? 'menu-item-has-children' : 'menu-item-has-not-children'">
+                                        <a class="parentBtn" th:onclick="getURL([[${tabLabel.url}]],[[${tabLabel.id}]]);"
+                                           th:text="${tabLabel.labelName}"></a>
+                                        <ul class="sub-menu" th:if="${tabLabel.sonLabelList.size()} > 0">
+                                            <li th:each="sonTab:${tabLabel.sonLabelList}"><a class="sonBtn"
+                                                    th:onclick="getURL([[${sonTab.url}]],[[${sonTab.id}]]);"
+                                                    th:text="${sonTab.labelName}"></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End of Nav Menu -->
+
+                            <!-- Mobile Menu -->
+                            <div class="mobile-menu-cover">
+                                <ul class="nav mobile-nav-menu">
+                                    <li class="search-toggle-open">
+                                        <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                                    </li>
+                                    <li class="search-toggle-close hide">
+                                        <img src="../images/close.svg" alt="" class="img-fluid">
+                                    </li>
+                                    <li class="nav-menu-toggle">
+                                        <img src="../images/menu-toggler.svg" alt="" class="img-fluid svg">
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End of Mobile Menu -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+
+    <!-- 内容主体区域 -->
+    <iframe src="/free/index" height="700" frameborder="0" width="100%" id="mainFrame" name="my-iframe"></iframe>
+</div>
+<script src="../layui/layui.js"></script>
+<!-- JS Files -->
+
+<!-- ==== JQuery 1.12.1 js file ==== -->
+<script src="../js/jQuery/jquery-3.4.1.js"></script>
+
+<!-- ==== Bootstrap js file ==== -->
+<script src="../js/bootstrap.bundle.min.js"></script>
+
+<!-- ==== layui js file ==== -->
+<script src="../layui/layui.js"></script>
+
+<!-- ==== Owl Carousel ==== -->
+<script src="../plugins/owl-carousel/owl.carousel.min.js"></script>
+
+<!-- ==== Magnific Popup ==== -->
+<script src="../plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- ==== Script js file ==== -->
+<script src="../js/scripts.js"></script>
+
+<!-- ==== Custom js file ==== -->
+<script src="../js/custom.js"></script>
+<script>
+    $(function () {
+         //取到窗口的高度
+        var winH = $(window).height() - 100;
+        //取到页面的高度
+        var bodyH = $(document).height() - 100;
+        if (bodyH > winH) {
+            $("#mainFrame").height(bodyH + 'px');
+        } else {
+            $("#mainFrame").height(winH + 'px');
+        }
+        var url = localStorage.getItem("url");
+        var params = localStorage.getItem("params");
+        if (!window.name) {
+            window.name = 'main';
+        } else {
+            if (window.name == 'main' && url) {
+                window.name = url;
+            } else {
+                if('/free/blog' == url){
+                    return false;
+                }
+                postCurrent(url,JSON.parse(params));
+            }
+        }
+    });
+</script>
+</body>
+</html>

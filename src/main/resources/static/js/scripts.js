@@ -93,10 +93,18 @@ We may release future updates so it will overwrite this file. it's better and sa
   });
 
   function navOnScroll() {
-    if ($(window).scrollTop() > 0) {
+    /*if ($(window).scrollTop() > 0) {
+      console.log($('.header-fixed', parent.document).html())
       $('.header-fixed').addClass('is-sticky fadeInDown animated');
     } else {
       $('.header-fixed').removeClass('is-sticky fadeInDown animated');
+    }*/
+    if ($(window).scrollTop() > 0) {
+      $('.header-fixed', parent.document).addClass('is-sticky fadeInDown animated');
+      $('.layui-header', parent.document).css("height","64px");
+    } else {
+      $('.header-fixed', parent.document).removeClass('is-sticky fadeInDown animated');
+      $('.layui-header', parent.document).css("height","107px");
     }
   }
 
@@ -104,9 +112,18 @@ We may release future updates so it will overwrite this file. it's better and sa
   $('.mobile-nav-menu .nav-menu-toggle').on('click', function () {
     $('.nav-menu').toggleClass('show');
   });
-  $('.nav-menu .menu-item-has-children a').on('click', function (e) {
+  $('.nav-menu .menu-item-has-not-children a').on('click', function () {
+    $('.nav-menu').toggleClass('show');
+  });
+  $('.nav-menu .menu-item-has-children .parentBtn').on('click', function (e) {
     if ($(window).width() <= 991) {
       $(this).siblings('.sub-menu').addClass('show');
+    }
+  });
+  $('.nav-menu .menu-item-has-children .sonBtn').on('click', function (e) {
+    if ($(window).width() <= 991) {
+      $(this).parents('.sub-menu').removeClass('show');
+      $('.nav-menu').toggleClass('show');
     }
   });
 

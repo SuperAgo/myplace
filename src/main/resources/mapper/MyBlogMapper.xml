@@ -3,6 +3,7 @@
 <mapper namespace="com.myplace.models.dao.MyBlogMapper">
     <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyBlog">
         <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="banner" jdbcType="VARCHAR" property="banner"/>
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="label" jdbcType="INTEGER" property="label"/>
         <result column="author" jdbcType="INTEGER" property="author"/>
@@ -20,7 +21,7 @@
         <result column="network_avatar" jdbcType="VARCHAR" property="networkAvatar"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, title,label, author, ins_time, comments, compliments, reader, is_top, topping_time, is_selected,
+    id, banner, title,label, author, ins_time, comments, compliments, reader, is_top, topping_time, is_selected,
     selected_time,content
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -41,12 +42,12 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="com.myplace.models.entity.MyBlog">
-    insert into my_blog (id, title,label, author,
+    insert into my_blog (id, banner, title,label, author,
       ins_time, comments, compliments,
       reader, is_top, topping_time,
       is_selected, selected_time, content
       )
-    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{label,jdbcType=INTEGER}, #{author,jdbcType=INTEGER},
+    values (#{id,jdbcType=INTEGER}, #{banner,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{label,jdbcType=INTEGER}, #{author,jdbcType=INTEGER},
       #{insTime,jdbcType=TIMESTAMP}, #{comments,jdbcType=INTEGER}, #{compliments,jdbcType=INTEGER},
       #{reader,jdbcType=INTEGER}, #{isTop,jdbcType=INTEGER}, #{toppingTime,jdbcType=TIMESTAMP},
       #{isSelected,jdbcType=INTEGER}, #{selectedTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
@@ -57,6 +58,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
+            </if>
+            <if test="banner != null">
+                banner,
             </if>
             <if test="title != null">
                 title,
@@ -99,6 +103,9 @@
             <if test="id != null">
                 #{id,jdbcType=INTEGER},
             </if>
+            <if test="banner != null">
+                #{banner,jdbcType=VARCHAR},
+            </if>
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>
@@ -140,6 +147,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.myplace.models.entity.MyBlog">
         update my_blog
         <set>
+            <if test="banner != null">
+                banner = #{banner,jdbcType=VARCHAR},
+            </if>
             <if test="title != null">
                 title = #{title,jdbcType=VARCHAR},
             </if>
@@ -181,7 +191,8 @@
     </update>
     <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.myplace.models.entity.MyBlog">
     update my_blog
-    set title = #{title,jdbcType=VARCHAR},
+    set banner = #{banner,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
       label = #{label,jdbcType=INTEGER},
       author = #{author,jdbcType=INTEGER},
       ins_time = #{insTime,jdbcType=TIMESTAMP},
@@ -197,7 +208,8 @@
   </update>
     <update id="updateByPrimaryKey" parameterType="com.myplace.models.entity.MyBlog">
     update my_blog
-    set title = #{title,jdbcType=VARCHAR},
+    set banner = #{banner,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
       label = #{label,jdbcType=INTEGER},
       author = #{author,jdbcType=INTEGER},
       ins_time = #{insTime,jdbcType=TIMESTAMP},

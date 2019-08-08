@@ -17,6 +17,9 @@ import com.myplace.models.entity.enums.LabelGradeEnum;
 import com.myplace.models.entity.enums.UserTypeEnum;
 import com.myplace.models.service.BlogService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
@@ -37,14 +40,6 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ModelAndView getIndex() {
         ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
         //轮播*3
         List<MyBlog> carouselArticle = myBlogMapper.getCarouselArticle();
         mv.addObject("carouselArticle", carouselArticle);
@@ -90,22 +85,24 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ModelAndView getDetail(Integer blogId) {
+    public ModelAndView getMain() {
         ModelAndView mv = new ModelAndView();
         //header栏   start
         List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
+        for (Map myLabel : myLabelList) {
+            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer) myLabel.get("id"));
+            myLabel.put("sonLabelList", sonLabelList);
         }
         mv.addObject("myLabelList", myLabelList);
         //header栏   end
+
         //sidebar栏  start
         //关于博主
         Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
         mv.addObject("myUser", myUser);
         //精选*2
-        mv.addObject("selectedArticles", myBlogMapper.getSelectedArticles());
+        List<MyBlog> selectedArticles = myBlogMapper.getSelectedArticles();
+        mv.addObject("selectedArticles", selectedArticles);
         //分类文章
         List<Map> sonLabelList = myLabelMapper.getSonLabelList();
         List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
@@ -126,7 +123,40 @@ public class BlogServiceImpl implements BlogService {
         }
         mv.addObject("mostCommentedArticles", mostCommentedArticleList);
         //sidebar栏  end
+        mv.setViewName("main");
+        return mv;
+    }
 
+    @Override
+    public ModelAndView getDetail(Integer blogId) {
+        ModelAndView mv = new ModelAndView();
+        //sidebar栏  start
+        //关于博主
+        Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
+        mv.addObject("myUser", myUser);
+        //精选*2
+        List<MyBlog> selectedArticles = myBlogMapper.getSelectedArticles();
+        mv.addObject("selectedArticles", selectedArticles);
+        //分类文章
+        List<Map> sonLabelList = myLabelMapper.getSonLabelList();
+        List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
+        mv.addObject("sonLabelList", sonLabelList);
+        mv.addObject("classificationArticles", classificationArticles);
+        //评论最多文章
+        List<MyBlog> mostCommentedArticles = myBlogMapper.getMostCommentedArticles();
+        List<List> mostCommentedArticleList = new ArrayList();
+        List<MyBlog> page = new ArrayList<>();
+        for (MyBlog myBlog : mostCommentedArticles) {
+            if (page.size() < 2) {
+                page.add(myBlog);
+                if (page.size() == 2) {
+                    mostCommentedArticleList.add(page);
+                    page = new ArrayList<>();
+                }
+            }
+        }
+        mv.addObject("mostCommentedArticles", mostCommentedArticleList);
+        //sidebar栏  end
         //文章tab
         List<Map> blogTabs = new ArrayList<>();
         Map blogTab = myLabelMapper.getBlogTabByBlogId(blogId);
@@ -151,8 +181,14 @@ public class BlogServiceImpl implements BlogService {
         List<Map> articleSonLabels = myLabelMapper.selectArticleSonLabels(blogId);
         myBlog.setReader(myBlog.getReader() + 1);
         myBlogMapper.updateByPrimaryKeySelective(myBlog);
+        List<MyLeavingMessage> commentList = myLeavingMessageMapper.selectCommentByBlogId(blogId);
+        for(MyLeavingMessage myLeavingMessage : commentList){
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(),myLeavingMessage.getBlogId());
+            myLeavingMessage.setSonList(sonList);
+        }
         mv.addObject("blogDetail", myBlog);
         mv.addObject("articleSonLabels", articleSonLabels);
+        mv.addObject("commentList", commentList);
         mv.setViewName("blog-details");
         return mv;
     }
@@ -160,40 +196,6 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ModelAndView getTab(Integer pageNum, Integer tabId) {
         ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
-        //sidebar栏  start
-        //关于博主
-        Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
-        mv.addObject("myUser", myUser);
-        //精选*2
-        mv.addObject("selectedArticles", myBlogMapper.getSelectedArticles());
-        //分类文章
-        List<Map> sonLabelList = myLabelMapper.getSonLabelList();
-        List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
-        mv.addObject("sonLabelList", sonLabelList);
-        mv.addObject("classificationArticles", classificationArticles);
-        //评论最多文章
-        List<MyBlog> mostCommentedArticles = myBlogMapper.getMostCommentedArticles();
-        List<List> mostCommentedArticleList = new ArrayList();
-        List<MyBlog> page = new ArrayList<>();
-        for (MyBlog myBlog : mostCommentedArticles) {
-            if (page.size() < 2) {
-                page.add(myBlog);
-                if (page.size() == 2) {
-                    mostCommentedArticleList.add(page);
-                    page = new ArrayList<>();
-                }
-            }
-        }
-        mv.addObject("mostCommentedArticles", mostCommentedArticleList);
-        //sidebar栏  end
         Map params = new HashMap();
         params.put("tabId", tabId);
         //类别信息
@@ -203,7 +205,7 @@ public class BlogServiceImpl implements BlogService {
         List<MyLabel> myLabelsList = myLabelMapper.selectMyLabelByPage(params);
         PageInfo<MyLabel> myLabelPageInfo = new PageInfo<>(myLabelsList);
         mv.addObject("PageInfo", myLabelPageInfo);
-        mv.addObject("url", "/blog/tab");
+        mv.addObject("url", "/free/tab");
         String paramsId = "tabId=" + tabId;
         mv.addObject("paramsId", paramsId);
         //标签tab
@@ -230,20 +232,13 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ModelAndView getLabel(Integer pageNum, Integer tabId) {
         ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
         //sidebar栏  start
         //关于博主
         Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
         mv.addObject("myUser", myUser);
         //精选*2
-        mv.addObject("selectedArticles", myBlogMapper.getSelectedArticles());
+        List<MyBlog> selectedArticles = myBlogMapper.getSelectedArticles();
+        mv.addObject("selectedArticles", selectedArticles);
         //分类文章
         List<Map> sonLabelList = myLabelMapper.getSonLabelList();
         List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
@@ -269,11 +264,11 @@ public class BlogServiceImpl implements BlogService {
         //类别信息
         MyLabel myLabel = myLabelMapper.selectByPrimaryKey(tabId);
         mv.addObject("myLabel", myLabel);
-        PageHelper.startPage(pageNum, 1);
+        PageHelper.startPage(pageNum, 8);
         List<MyBlog> myBlogList = myBlogMapper.selectMyBlogByPage(params);
         PageInfo<MyBlog> myBlogPageInfo = new PageInfo<>(myBlogList);
         mv.addObject("PageInfo", myBlogPageInfo);
-        mv.addObject("url", "/blog/label");
+        mv.addObject("url", "/free/label");
         String paramsId = "tabId=" + tabId;
         mv.addObject("paramsId", paramsId);
         //标签tab
@@ -300,37 +295,6 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ModelAndView getAbout() {
         ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
-        //sidebar栏  start
-        //精选*2
-        mv.addObject("selectedArticles", myBlogMapper.getSelectedArticles());
-        //分类文章
-        List<Map> sonLabelList = myLabelMapper.getSonLabelList();
-        List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
-        mv.addObject("sonLabelList", sonLabelList);
-        mv.addObject("classificationArticles", classificationArticles);
-        //评论最多文章
-        List<MyBlog> mostCommentedArticles = myBlogMapper.getMostCommentedArticles();
-        List<List> mostCommentedArticleList = new ArrayList();
-        List<MyBlog> page = new ArrayList<>();
-        for (MyBlog myBlog : mostCommentedArticles) {
-            if (page.size() < 2) {
-                page.add(myBlog);
-                if (page.size() == 2) {
-                    mostCommentedArticleList.add(page);
-                    page = new ArrayList<>();
-                }
-            }
-        }
-        mv.addObject("mostCommentedArticles", mostCommentedArticleList);
-        //sidebar栏  end
         //标签tab
         List<Map> blogTabs = new ArrayList<>();
         Map map = new HashMap();
@@ -359,17 +323,8 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ModelAndView getContact() {
+    public ModelAndView getContact(Integer pageNum) {
         ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
-
         //标签tab
         List<Map> blogTabs = new ArrayList<>();
         Map map = new HashMap();
@@ -392,9 +347,35 @@ public class BlogServiceImpl implements BlogService {
         mv.addObject("blogTabs", blogTabs);
 
         //留言板信息
+        PageHelper.startPage(pageNum, 10);
+        List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
+        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
+        for(MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()){
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
+            myLeavingMessage.setSonList(sonList);
+        }
         Map messageBoard = myUserMapper.getMyMessageBoard(UserTypeEnum.博主.getIndex());
         mv.addObject("messageBoard", messageBoard);
+        mv.addObject("PageInfo", myLeavingMessagePageInfo);
         mv.setViewName("contact");
+        return mv;
+    }
+
+    @Override
+    public ModelAndView getNewContact(Integer pageNum) {
+        ModelAndView mv = new ModelAndView();
+               //留言板信息
+        PageHelper.startPage(pageNum, 10);
+        List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
+        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
+        for(MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()){
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
+            myLeavingMessage.setSonList(sonList);
+        }
+        Map messageBoard = myUserMapper.getMyMessageBoard(UserTypeEnum.博主.getIndex());
+        mv.addObject("messageBoard", messageBoard);
+        mv.addObject("PageInfo", myLeavingMessagePageInfo);
+        mv.setViewName("contact::contact_refresh");
         return mv;
     }
 
@@ -405,23 +386,50 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ModelAndView getScarch(Integer pageNum, String title) {
+    public ModelAndView getSearch(Integer pageNum, String title) {
         ModelAndView mv = new ModelAndView();
         //header栏   start
         List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel:myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer)myLabel.get("id"));
-            myLabel.put("sonLabelList",sonLabelList);
+        for (Map myLabel : myLabelList) {
+            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer) myLabel.get("id"));
+            myLabel.put("sonLabelList", sonLabelList);
         }
         mv.addObject("myLabelList", myLabelList);
         //header栏   end
+        //sidebar栏  start
+        //关于博主
+        Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
+        mv.addObject("myUser", myUser);
+        //精选*2
+        List<MyBlog> selectedArticles = myBlogMapper.getSelectedArticles();
+        mv.addObject("selectedArticles", selectedArticles);
+        //分类文章
+        List<Map> sonLabelList = myLabelMapper.getSonLabelList();
+        List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
+        mv.addObject("sonLabelList", sonLabelList);
+        mv.addObject("classificationArticles", classificationArticles);
+        //评论最多文章
+        List<MyBlog> mostCommentedArticles = myBlogMapper.getMostCommentedArticles();
+        List<List> mostCommentedArticleList = new ArrayList();
+        List<MyBlog> page = new ArrayList<>();
+        for (MyBlog myBlog : mostCommentedArticles) {
+            if (page.size() < 2) {
+                page.add(myBlog);
+                if (page.size() == 2) {
+                    mostCommentedArticleList.add(page);
+                    page = new ArrayList<>();
+                }
+            }
+        }
+        mv.addObject("mostCommentedArticles", mostCommentedArticleList);
+        //sidebar栏  end
         Map params = new HashMap();
         params.put("title", title);
         PageHelper.startPage(pageNum, 8);
         List<MyBlog> myBlogList = myBlogMapper.selectMyBlogByPage(params);
         PageInfo<MyBlog> myBlogPageInfo = new PageInfo<>(myBlogList);
         mv.addObject("PageInfo", myBlogPageInfo);
-        mv.addObject("url", "/blog/scarch");
+        mv.addObject("url", "/free/search");
         String paramsId = "title=" + title;
         mv.addObject("paramsId", paramsId);
         mv.addObject("params", title);
@@ -463,8 +471,79 @@ public class BlogServiceImpl implements BlogService {
         myLeavingMessage.setInsTime(new Date());
         int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
         if (i < 1) {
-            return ResponseModel.error("留言成功！");
+            return ResponseModel.error("留言失败！");
         }
         return ResponseModel.success("留言成功！");
+    }
+
+    @Override
+    public ModelAndView getError() {
+        ModelAndView mv = new ModelAndView();
+        //header栏   start
+        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
+        for (Map myLabel : myLabelList) {
+            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer) myLabel.get("id"));
+            myLabel.put("sonLabelList", sonLabelList);
+        }
+        mv.addObject("myLabelList", myLabelList);
+        //header栏   end
+        mv.setViewName("error");
+        return mv;
+    }
+
+
+    @Override
+    public ModelAndView getError404() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("404");
+        return mv;
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseModel setCommont(RequestModel requestModel) {
+        MyLeavingMessage myLeavingMessage = JSON.parseObject(JSON.toJSONString(requestModel.getParams()), MyLeavingMessage.class);
+        myLeavingMessage.setInsTime(new Date());
+        int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
+        MyBlog myBlog = myBlogMapper.selectByPrimaryKey(myLeavingMessage.getBlogId());
+        myBlog.setComments(myBlog.getComments() + 1);
+        int x = myBlogMapper.updateByPrimaryKeySelective(myBlog);
+        if (null != myLeavingMessage.getParentId()) {
+            MyLeavingMessage myParentLeavingMessage = myLeavingMessageMapper.selectByPrimaryKey(myLeavingMessage.getParentId());
+            myParentLeavingMessage.setComments(myParentLeavingMessage.getComments() + 1);
+            int y = myLeavingMessageMapper.updateByPrimaryKeySelective(myParentLeavingMessage);
+            if ((x + i + y) < 3) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return ResponseModel.error("评论失败！");
+            }
+        } else {
+            if ((x + i) < 2) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return ResponseModel.error("评论失败！");
+            }
+        }
+        return ResponseModel.success("评论成功！");
+    }
+
+
+    @Override
+    public ModelAndView getNewCommont(Integer blogId) {
+        ModelAndView mv = new ModelAndView();
+                //文章详情
+        MyBlog myBlog = myBlogMapper.selectByPrimaryKey(blogId);
+        List<Map> articleSonLabels = myLabelMapper.selectArticleSonLabels(blogId);
+        myBlog.setReader(myBlog.getReader() + 1);
+        myBlogMapper.updateByPrimaryKeySelective(myBlog);
+        List<MyLeavingMessage> commentList = myLeavingMessageMapper.selectCommentByBlogId(blogId);
+        for(MyLeavingMessage myLeavingMessage : commentList){
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(),myLeavingMessage.getBlogId());
+            myLeavingMessage.setSonList(sonList);
+        }
+        mv.addObject("blogDetail", myBlog);
+        mv.addObject("articleSonLabels", articleSonLabels);
+        mv.addObject("commentList", commentList);
+        mv.setViewName("blog-details::detail_refresh");
+        return mv;
     }
 }
