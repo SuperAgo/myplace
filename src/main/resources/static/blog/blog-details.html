@@ -50,9 +50,11 @@
                                 <li class="meta-date"><a href="#"
                                                          th:text="${#dates.format(blogDetail.insTime,'yyyy年MM月dd日')}"></a>
                                 </li>
-                                <li class="meta-reader"><a th:title="${blogDetail.reader}+'已读'"><i class="fa fa-eye"></i>
+                                <li class="meta-reader"><a th:title="${blogDetail.reader}+'已读'"><i
+                                        class="fa fa-eye"></i>
                                     [[${blogDetail.reader}]]</a></li>
-                                <li class="meta-comments"><a th:title="${blogDetail.comments}+'评论'" href="#commonts"><i class="fa fa-comment"></i>
+                                <li class="meta-comments"><a th:title="${blogDetail.comments}+'评论'" href="#commonts"><i
+                                        class="fa fa-comment"></i>
                                     [[${blogDetail.comments}]]</a></li>
                             </ul>
                         </div>
@@ -62,16 +64,17 @@
 
                     <!-- Post Content -->
                     <div class="post-content-cover my-drop-cap">
-                        <p th:text="${blogDetail.content}">
-
-                        </p>
+                        <div id="test-editormd">
+                            <textarea style="display:none;">[[${blogDetail.content}]]</textarea>
+                        </div>
                     </div>
                     <!-- End of Post Content -->
 
                     <!-- Tags -->
                     <div class="post-all-tags">
                         <a th:onclick="getURL([[${articleSonLabel.tabUrl}]],[[${articleSonLabel.tabId}]]);"
-                           th:each="articleSonLabel:${articleSonLabels}" th:text="${articleSonLabel.tabName}">Fashion</a>
+                           th:each="articleSonLabel:${articleSonLabels}"
+                           th:text="${articleSonLabel.tabName}">Fashion</a>
                     </div>
                     <!-- End of Tags -->
 
@@ -109,7 +112,7 @@
                                 </div>
                                 <!-- End of Single Comment -->
                                 <ul class="children" th:if="${comment.sonList.size() > 0}">
-                                    <li class="single-comment-wrapper"  th:each="sonComment :${comment.sonList}">
+                                    <li class="single-comment-wrapper" th:each="sonComment :${comment.sonList}">
                                         <!-- Single Comment -->
                                         <div class="single-post-comment">
                                             <!-- Author Image -->
@@ -119,8 +122,10 @@
                                             <!-- Comment Content -->
                                             <div class="comment-content">
                                                 <div class="comment-author-name">
-                                                    <h6>[[${sonComment.name}]]</h6><span th:if="${sonComment.parentId != null}">回复：</span>
-                                                    <h6 th:if="${sonComment.parentId != null}">[[${sonComment.parentName}]]</h6> <span> [[${#dates.format(sonComment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
+                                                    <h6>[[${sonComment.name}]]</h6><span
+                                                        th:if="${sonComment.parentId != null}">回复：</span>
+                                                    <h6 th:if="${sonComment.parentId != null}">
+                                                        [[${sonComment.parentName}]]</h6> <span> [[${#dates.format(sonComment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
                                                 </div>
                                                 <p>[[${sonComment.message}]]</p>
                                                 <a href="#setCommon" class="reply-btn"
@@ -167,5 +172,28 @@
     </div>
 </div>
 <div th:replace="footer :: myfooter"></div>
+<script src="../plugins/editormd/lib/marked.min.js"></script>
+<script src="../plugins/editormd/lib/prettify.min.js"></script>
+
+<script src="../plugins/editormd/lib/raphael.min.js"></script>
+<script src="../plugins/editormd/lib/underscore.min.js"></script>
+<script src="../plugins/editormd/lib/sequence-diagram.min.js"></script>
+<script src="../plugins/editormd/lib/flowchart.min.js"></script>
+<script src="../plugins/editormd/lib/jquery.flowchart.min.js"></script>
+<script src="../plugins/editormd/editormd.min.js"></script>
+<link rel="stylesheet" href="../plugins/editormd/css/editormd.css">
+<script>
+    var testEditor;
+    $(function () {
+        testEditor = editormd.markdownToHTML("test-editormd", {
+            htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            emoji           : true,
+            taskList        : true,
+            tex             : true,  // 默认不解析
+            flowChart       : true,  // 默认不解析
+            sequenceDiagram : true,  // 默认不解析
+        })
+    })
+</script>
 </body>
 </html>

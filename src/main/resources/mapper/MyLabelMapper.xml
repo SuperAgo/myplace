@@ -272,7 +272,7 @@
       and ml.parent_id = #{tabId}
     </if>
     <if test="labelName != null and labelName != ''">
-      and ml.label_name LIKE '%#{labelName}%'
+      and ml.label_name LIKE CONCAT('%',#{labelName},'%')
     </if>
     ORDER BY
     ml.sort DESC
