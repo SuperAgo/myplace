@@ -38,6 +38,10 @@
 
     <!--==== Custom css file ====-->
     <link rel="stylesheet" href="../css/custom.css">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/solid.css'>
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css'>
+
+    <link rel="stylesheet" href="../css/mp3Style.css">
 
 </head>
 <body class="layui-layout-body">
@@ -48,7 +52,8 @@
         <div class="nav-search-box">
             <form id="search">
                 <div class="input-group">
-                    <input type="text" name="title" id="title" class="form-control" placeholder="eg. feel the love and …">
+                    <input type="text" name="title" id="title" class="form-control"
+                           placeholder="eg. feel the love and …">
                     <span class="b-line"></span>
                     <span class="b-line-under"></span>
                     <div class="input-group-append">
@@ -58,6 +63,52 @@
                     </div>
                 </div>
             </form>
+            <div id="app-cover">
+                <!--<div id="bg-artwork"></div>
+                <div id="bg-layer"></div>-->
+                <div id="player">
+                    <div id="player-track">
+                        <div id="album-name"></div>
+                        <div id="track-name"></div>
+                        <div id="track-time">
+                            <div id="current-time"></div>
+                            <div id="track-length"></div>
+                        </div>
+                        <div id="s-area">
+                            <div id="ins-time"></div>
+                            <div id="s-hover"></div>
+                            <div id="seek-bar"></div>
+                        </div>
+                    </div>
+                    <div id="player-content">
+                        <div id="album-art">
+                            <img src="../images/album_cover/a_cute_date.jpg" class="active" id="_1">
+                            <img src="../images/album_cover/By_The_Sea.jpg" class="active" id="_2">
+                            <img src="../images/album_cover/Letter.jpg" class="active" id="_3">
+                            <img src="../images/album_cover/wherever_you_go.jpg" class="active" id="_4">
+                            <img src="../images/album_cover/Princess.jpg" class="active" id="_5">
+                            <div id="buffer-box">缓冲…</div>
+                        </div>
+                        <div id="player-controls">
+                            <div class="control">
+                                <div class="button" id="play-previous">
+                                    <i class="fas fa-backward"></i>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="button" id="play-pause-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="button" id="play-next">
+                                    <i class="fas fa-forward"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- End of Nav Search Box -->
 
@@ -72,19 +123,30 @@
                             </div>
                             <!-- End of Logo -->
                         </div>
+                        <!--<div class="col-lg-3 col-md-4 col-4 example">
 
+                        </div>-->
                         <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
                             <!-- Nav Menu -->
                             <div class="nav-menu-cover">
                                 <ul class="nav nav-menu"><!-- -->
+                                    <!--<li>
+                                        <div class="example">
+                                            <audio crossorigin>
+                                                <source src="../audio/Music.mp3" type="audio/mpeg">
+                                            </audio>
+                                        </div>
+                                    </li>-->
                                     <li th:each="tabLabel:${myLabelList}"
                                         th:class="${tabLabel.sonLabelList.size()} > 0 ? 'menu-item-has-children' : 'menu-item-has-not-children'">
-                                        <a class="parentBtn" th:onclick="getURL([[${tabLabel.url}]],[[${tabLabel.id}]]);"
+                                        <a class="parentBtn"
+                                           th:onclick="getURL([[${tabLabel.url}]],[[${tabLabel.id}]]);"
                                            th:text="${tabLabel.labelName}"></a>
                                         <ul class="sub-menu" th:if="${tabLabel.sonLabelList.size()} > 0">
                                             <li th:each="sonTab:${tabLabel.sonLabelList}"><a class="sonBtn"
-                                                    th:onclick="getURL([[${sonTab.url}]],[[${sonTab.id}]]);"
-                                                    th:text="${sonTab.labelName}"></a></li>
+                                                                                             th:onclick="getURL([[${sonTab.url}]],[[${sonTab.id}]]);"
+                                                                                             th:text="${sonTab.labelName}"></a>
+                                            </li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -99,6 +161,9 @@
                                     </li>
                                     <li class="search-toggle-close hide">
                                         <img src="../images/close.svg" alt="" class="img-fluid">
+                                    </li>
+                                    <li class="search-toggle-open">
+                                        <img src="../images/music.svg" alt="" id="music" class="img-fluid svg">
                                     </li>
                                     <li class="nav-menu-toggle">
                                         <img src="../images/menu-toggler.svg" alt="" class="img-fluid svg">
@@ -138,10 +203,12 @@
 <!-- ==== Custom js file ==== -->
 <script src="../js/custom.js"></script>
 <script src="../js/canvas-particle.js"></script>
+<script src="../js/music.js"></script>
 <script>
+
     var config;
     $(function () {
-         //取到窗口的高度
+        //取到窗口的高度
         var winH = $(window).height() - 100;
         //取到页面的高度
         var bodyH = $(document).height() - 100;
@@ -161,10 +228,10 @@
             if (window.name == 'main' && url) {
                 window.name = url;
             } else {
-                if('/free/blog' == url || !url){
+                if ('/free/blog' == url || !url) {
                     return false;
                 }
-                postCurrent(url,JSON.parse(params));
+                postCurrent(url, JSON.parse(params));
             }
         }
         config = {
