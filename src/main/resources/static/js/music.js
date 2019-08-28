@@ -145,6 +145,7 @@ $(function () {
             tProgress.text('00:00');
             albumArt.removeClass('buffering').removeClass('active');
             clearInterval(buffInterval);
+            playNextTrackButton.click();
         }
     }
 
@@ -209,6 +210,7 @@ $(function () {
 
             bgArtwork.css({'background-image': 'url(' + bgArtworkUrl + ')'});
         } else {
+            clearInterval(InterVal);
             if (flag == 0 || flag == 1)
                 --currIndex;
             else
