@@ -446,7 +446,7 @@ body {
 }
 @media only screen and (max-width: 575px) {
   .pt-120 {
-    padding-top: 80px;
+    padding-top: 0px;
   }
 }
 
@@ -1878,6 +1878,7 @@ body {
   -ms-flex-preferred-size: 35%;
       flex-basis: 35%;
   max-width: 35%;
+  max-height: 300px;
   background-position: center;
   background-size: cover;
   background-color: #f1f1f1;
@@ -1901,6 +1902,7 @@ body {
 }
 .post-default.post-has-front-title .post-thumb {
   min-height: 300px;
+  max-height: 400px;
   background-size: cover;
   background-repeat: no-repeat;
   background-color: #f1f1f1;
@@ -2153,8 +2155,8 @@ body {
 }
 
 .page-title {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   background-color: #f2f2f2;
 }
 @media only screen and (max-width: 991px) {
@@ -2164,6 +2166,7 @@ body {
 }
 @media only screen and (max-width: 479px) {
   .page-title {
+    display: none;
     padding: 40px 0px;
   }
 }
@@ -2185,7 +2188,6 @@ body {
   }
 }
 .page-title .nav {
-  margin-top: 10px;
   margin-bottom: -4px;
 }
 .page-title .nav li {

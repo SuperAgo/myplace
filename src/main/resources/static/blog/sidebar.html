@@ -24,7 +24,7 @@
                     <div class="author-social text-center">
                         <a href="#"><i class="fa fa-qq"></i></a>
                         <a href="#"><i class="fa fa-weixin"></i></a>
-                        <a href="#"><i class="fa fa-weibo"></i></a>
+                        <a onclick="window.parent.location.href='https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=sw6tbjkj'"><i class="fa fa-grav"></i></a>
                         <a href="#"><i class="fa fa-github"></i></a>
                     </div>
                     <!-- Author Text -->
@@ -47,11 +47,12 @@
                 <!-- Widget Content -->
                 <div class="widget-content">
                     <!-- Single Post -->
-                    <div class="featured-post" th:each="article:${selectedArticles}">
+                    <div class="featured-post equalsWidthDiv equals100-80" th:each="article:${selectedArticles}">
                         <!-- Post Thumbnail -->
                         <a th:onclick="getDetail([[${article.id}]]);">
-                            <img src="../images/sidebar/fp-1.jpg" alt="" class="img-fluid">
+                            <img th:src="${article.banner}" alt="" class="img-fluid sonImgCss">
                         </a>
+
                         <!-- Post Title -->
                         <div class="featured-post-title">
                             <h6><a th:onclick="getDetail([[${article.id}]]);" th:text="${article.title}"></a></h6>
@@ -107,9 +108,9 @@
                     <!-- Single Post -->
                     <div class="wrp-cover" th:each="article:${classificationArticles}">
                         <!-- Post Thumbnail -->
-                        <div class="post-thumb">
+                        <div class="post-thumb equalsWidthDiv equals20">
                             <a th:onclick="getDetail([[${article.id}]]);">
-                                <img src="../images/sidebar/rp-1.jpg" alt="" class="img-fluid">
+                                <img th:src="${article.banner}" alt="" class="img-fluid sonImgCss">
                             </a>
                         </div>
                         <!-- Post Title -->
@@ -138,9 +139,9 @@
                         <!-- Carousel Item -->
                         <div class="wmcp-item" th:each="articles:${mostCommentedArticles}">
                             <!-- Single Post -->
-                            <div class="wmc-post" th:each="article:${articles}">
+                            <div class="wmc-post equalsWidthDiv equals100-80" th:each="article:${articles}">
                                 <a th:onclick="getDetail([[${article.id}]]);">
-                                    <img src="../images/sidebar/mcp-1.jpg" alt="" class="img-fluid">
+                                    <img th:src="${article.banner}" alt="" class="img-fluid sonImgCss">
                                 </a>
                                 <div class="wmc-post-title">
                                     <h6><a th:onclick="getDetail([[${article.id}]]);" th:text="${article.title}"></a></h6>

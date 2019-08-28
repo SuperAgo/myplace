@@ -19,15 +19,15 @@
                             <p class="category"><a th:onclick="getLabel([[${articles.label}]]);"
                                                    th:text="${articles.labelName}"></a></p>
                             <a th:onclick="getDetail([[${articles.id}]]);"><h1 th:text="${articles.title}"></h1></a>
-                            <p class="desc">[[${#strings.substring(articles.content,0,100)}]]<span>...</span></p>
+                            <p class="desc">[[${#strings.substring(articles.content,0,300)}]]<span>...</span></p>
                             <a th:onclick="getDetail([[${articles.id}]]);" class="btn btn-primary">View More</a>
                         </div>
                         <!-- End of Banner Text -->
                     </div>
-                    <div class="col-md-6 order-1 order-md-2">
+                    <div class="col-md-6 order-1 order-md-2 ">
                         <!-- Banner Image -->
-                        <div class="banner-slide-image">
-                            <img src="../images/banner/1.jpg" alt="" class="img-fluid">
+                        <div class="banner-slide-image equalsWidthDiv">
+                            <img th:src="${articles.banner}" alt="" class="img-fluid sonImgCss">
                         </div>
                         <!-- End of Banner Image -->
                     </div>
@@ -58,7 +58,7 @@
                      th:if="${artStut.index} == 2">
                     <div class="post-thumb">
                         <a th:onclick="getDetail([[${articles.id}]]);">
-                            <div data-bg-img="../images/blog/4.jpg"></div>
+                            <div th:data-bg-img="${articles.banner}"></div>
                         </a>
                     </div>
                     <div class="post-data">
@@ -137,7 +137,7 @@
                         <div class="d-flex flex-wrap">
                             <div class="post-thumb align-self-stretch order-md-2">
                                 <a th:onclick="getDetail([[${articles.id}]]);">
-                                    <div data-bg-img="../images/blog/1.jpg"></div>
+                                    <div th:data-bg-img="${articles.banner}"></div>
                                 </a>
                             </div>
                             <div class="post-data order-md-1">
@@ -189,7 +189,7 @@
                             <!-- Post -->
                             <div class="post-default post-has-front-title">
                                 <div class="post-thumb">
-                                    <a th:onclick="getDetail([[${articles.id}]]);"> <img src="../images/blog/4.jpg" alt=""
+                                    <a th:onclick="getDetail([[${articles.id}]]);"> <img th:src="${articles.banner}" alt=""
                                                                                          class="img-fluid"> </a>
                                 </div>
                                 <div class="post-data">
@@ -210,9 +210,10 @@
                              th:if="${artStut.index} > 0">
                             <!-- Post -->
                             <div class="post-default">
-                                <div class="post-thumb">
-                                    <a th:onclick="getDetail([[${articles.id}]]);"> <img src="../images/blog/small/1.jpg" alt=""
-                                                                                         class="img-fluid"> </a>
+                                <div class="post-thumb equalsWidthDiv equals100-75">
+                                    <a th:onclick="getDetail([[${articles.id}]]);">
+                                        <img th:src="${articles.banner}" alt="" class="img-fluid sonImgCss">
+                                    </a>
                                 </div>
                                 <div class="post-data">
                                     <!-- Category -->
@@ -238,12 +239,6 @@
                 </div>
             </section>
             <!-- End of Most Viewed Post -->
-
-            <!-- 728 ad -->
-            <div class="pt-40 pb-40 biz-ad">
-                <a href="#"><img src="../images/ad-728.png" alt="" class="img-fluid"></a>
-            </div>
-            <!-- End of 728 ad -->
 
         </div>
         <div th:replace="sidebar :: mySidebar"  ></div>

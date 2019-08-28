@@ -25,7 +25,7 @@
             <!-- Category -->
             <div class="col-md-6" th:each="sonTab:${PageInfo.list}">
                 <div class="my-post-category">
-                    <a th:onclick="getURL([[${sonTab.tabUrl}]],[[${sonTab.tabId}]]);"  data-bg-img="../images/blog/1.jpg" class="d-flex align-items-center justify-content-center">
+                    <a th:onclick="getURL([[${sonTab.tabUrl}]],[[${sonTab.tabId}]]);"  th:data-bg-img="${sonTab.background}" class="d-flex align-items-center justify-content-center">
                         <div class="cat-title">[[${sonTab.labelName}]]([[${sonTab.num}]])</div>
                     </a>
                 </div>

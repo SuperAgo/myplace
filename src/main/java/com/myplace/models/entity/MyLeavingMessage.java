@@ -15,6 +15,7 @@ public class MyLeavingMessage {
     }
 
     private String parentName;
+    private String networkAvatar;
 
     public String getParentName() {
         return parentName;
@@ -22,6 +23,14 @@ public class MyLeavingMessage {
 
     public void setParentName(String parentName) {
         this.parentName = parentName;
+    }
+
+    public String getNetworkAvatar() {
+        return networkAvatar;
+    }
+
+    public void setNetworkAvatar(String networkAvatar) {
+        this.networkAvatar = networkAvatar;
     }
 
     /**

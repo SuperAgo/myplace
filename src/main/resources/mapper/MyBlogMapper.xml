@@ -273,8 +273,8 @@
         WHERE
             1 = 1
         ORDER BY
-            mb.compliments DESC,
-            mb.comments DESC
+            mb.comments DESC,
+            mb.reader DESC
         LIMIT 3
     </select>
 

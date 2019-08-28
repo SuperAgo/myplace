@@ -4005,8 +4005,8 @@ body .layui-table-tips .layui-layer-content {
     width: 20px;
     height: 20px;
     line-height: 20px;
-    background-color: #fff;
-    color: #5FB878;
+    background-color: #fff0;
+    color: #000000;
     border-radius: 50%;
     text-align: center;
     cursor: pointer

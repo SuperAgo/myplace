@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myplace.models.dao.MyWeightMapper">
+  <resultMap id="BaseResultMap" type="com.myplace.models.entity.MyWeight">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, weight, ins_time,user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from my_weight
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from my_weight
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.myplace.models.entity.MyWeight">
+    insert into my_weight
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="insTime != null">
+        ins_time,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=DECIMAL},
+      </if>
+      <if test="insTime != null">
+        #{insTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.myplace.models.entity.MyWeight">
+    update my_weight
+    <set>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=DECIMAL},
+      </if>
+      <if test="insTime != null">
+        ins_time = #{insTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getNearlySevenDaysOfData" resultType="java.util.HashMap">
+   SELECT
+	weight,
+	ins_time AS insTime
+    FROM
+        my_weight
+    WHERE
+        user_id = 2
+    ORDER BY
+        ins_time DESC
+    LIMIT 7
+  </select>
+
+  <select id="getThisMonthSData" resultType="java.util.HashMap">
+   SELECT
+        weight,
+        ins_time AS insTime
+    FROM
+        my_weight
+    WHERE
+        user_id = 2
+    AND DATE_FORMAT(ins_time, '%Y-%m') = #{params.month}
+    ORDER BY
+        ins_time DESC
+  </select>
+
+  <select id="selectByUserIdAndDate" resultType="java.lang.Integer">
+    SELECT
+	    COUNT(*)
+    FROM
+        my_weight
+    WHERE
+        user_id = #{params.userId}
+    AND DATE_FORMAT(ins_time, '%Y-%m-%d') = DATE_FORMAT(#{params.insTime}, '%Y-%m-%d')
+  </select>
+
+</mapper>

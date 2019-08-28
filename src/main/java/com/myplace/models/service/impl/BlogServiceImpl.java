@@ -1,18 +1,14 @@
 package com.myplace.models.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.myplace.common.page.RequestModel;
 import com.myplace.common.page.ResponseModel;
-import com.myplace.models.dao.MyBlogMapper;
-import com.myplace.models.dao.MyLabelMapper;
-import com.myplace.models.dao.MyLeavingMessageMapper;
-import com.myplace.models.dao.MyUserMapper;
-import com.myplace.models.entity.MyBlog;
-import com.myplace.models.entity.MyLabel;
-import com.myplace.models.entity.MyLeavingMessage;
-import com.myplace.models.entity.MyUser;
+import com.myplace.common.utils.SensitiveWord;
+import com.myplace.models.dao.*;
+import com.myplace.models.entity.*;
 import com.myplace.models.entity.enums.LabelGradeEnum;
 import com.myplace.models.entity.enums.UserTypeEnum;
 import com.myplace.models.service.BlogService;
@@ -24,6 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 @Service("blogService")
@@ -36,6 +35,8 @@ public class BlogServiceImpl implements BlogService {
     private MyUserMapper myUserMapper;
     @Resource
     private MyLeavingMessageMapper myLeavingMessageMapper;
+    @Resource
+    private MyAboutMapper myAboutMapper;
 
     @Override
     public ModelAndView getIndex() {
@@ -182,8 +183,8 @@ public class BlogServiceImpl implements BlogService {
         myBlog.setReader(myBlog.getReader() + 1);
         myBlogMapper.updateByPrimaryKeySelective(myBlog);
         List<MyLeavingMessage> commentList = myLeavingMessageMapper.selectCommentByBlogId(blogId);
-        for(MyLeavingMessage myLeavingMessage : commentList){
-            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(),myLeavingMessage.getBlogId());
+        for (MyLeavingMessage myLeavingMessage : commentList) {
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(), myLeavingMessage.getBlogId());
             myLeavingMessage.setSonList(sonList);
         }
         mv.addObject("blogDetail", myBlog);
@@ -316,8 +317,8 @@ public class BlogServiceImpl implements BlogService {
         Collections.reverse(blogTabs);
         mv.addObject("blogTabs", blogTabs);
 
-        Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
-        mv.addObject("myUser", myUser);
+        List<MyAbout> aboutList = myAboutMapper.selectAll();
+        mv.addObject("aboutList", aboutList);
         mv.setViewName("about");
         return mv;
     }
@@ -350,7 +351,7 @@ public class BlogServiceImpl implements BlogService {
         PageHelper.startPage(pageNum, 10);
         List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
         PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
-        for(MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()){
+        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
             List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
             myLeavingMessage.setSonList(sonList);
         }
@@ -364,11 +365,11 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ModelAndView getNewContact(Integer pageNum) {
         ModelAndView mv = new ModelAndView();
-               //留言板信息
+        //留言板信息
         PageHelper.startPage(pageNum, 10);
         List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
         PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
-        for(MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()){
+        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
             List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
             myLeavingMessage.setSonList(sonList);
         }
@@ -467,13 +468,50 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public ResponseModel setleaveAMessage(RequestModel requestModel) {
-        MyLeavingMessage myLeavingMessage = JSON.parseObject(JSON.toJSONString(requestModel.getParams()), MyLeavingMessage.class);
-        myLeavingMessage.setInsTime(new Date());
-        int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
-        if (i < 1) {
-            return ResponseModel.error("留言失败！");
+        try {
+            MyLeavingMessage myLeavingMessage = JSON.parseObject(JSON.toJSONString(requestModel.getParams()), MyLeavingMessage.class);
+            String message = myLeavingMessage.getMessage();
+            boolean flag = SensitiveWord.checkSenstiveWord(message);
+            if (flag) {
+                message = SensitiveWord.filterInfoAfter(message);
+            }
+            myLeavingMessage.setMessage(message);
+            myLeavingMessage.setInsTime(new Date());
+            int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
+            if (i < 1) {
+                return ResponseModel.error("留言失败！");
+            }
+            MyUser myUser = myUserMapper.selectByEmail(myLeavingMessage.getEmail());
+            if (null == myUser) {
+                myUser = new MyUser();
+                myUser.setEmail(myLeavingMessage.getEmail());
+                myUser.setNickName(myLeavingMessage.getName());
+                String Path = "networkAvatar.json";
+                BufferedReader reader = null;
+                InputStreamReader read = null;
+                String laststr = "";
+                read = new InputStreamReader(SensitiveWord.class.getClassLoader().getResourceAsStream(Path), "utf-8");
+                reader = new BufferedReader(read);
+                String tempString = null;
+                while ((tempString = reader.readLine()) != null) {
+                    laststr += tempString;
+                }
+                reader.close();
+                JSONArray urlList = JSON.parseArray(laststr);
+                Random rd = new Random();
+                //定义了一个整形a获得16以内的随机整数
+                //通过更改nextInt()中的数字来更改获取随机数的范围
+                int a = rd.nextInt(16);
+                myUser.setNetworkAvatar(urlList.getString((a-1)));
+                myUser.setInsTime(new Date());
+                myUser.setType(UserTypeEnum.其他.getIndex());
+                myUserMapper.insertSelective(myUser);
+            }
+            return ResponseModel.success("留言成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return ResponseModel.success("留言成功！");
+        return ResponseModel.error("留言失败！");
     }
 
     @Override
@@ -503,41 +541,78 @@ public class BlogServiceImpl implements BlogService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseModel setCommont(RequestModel requestModel) {
-        MyLeavingMessage myLeavingMessage = JSON.parseObject(JSON.toJSONString(requestModel.getParams()), MyLeavingMessage.class);
-        myLeavingMessage.setInsTime(new Date());
-        int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
-        MyBlog myBlog = myBlogMapper.selectByPrimaryKey(myLeavingMessage.getBlogId());
-        myBlog.setComments(myBlog.getComments() + 1);
-        int x = myBlogMapper.updateByPrimaryKeySelective(myBlog);
-        if (null != myLeavingMessage.getParentId()) {
-            MyLeavingMessage myParentLeavingMessage = myLeavingMessageMapper.selectByPrimaryKey(myLeavingMessage.getParentId());
-            myParentLeavingMessage.setComments(myParentLeavingMessage.getComments() + 1);
-            int y = myLeavingMessageMapper.updateByPrimaryKeySelective(myParentLeavingMessage);
-            if ((x + i + y) < 3) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ResponseModel.error("评论失败！");
+        try {
+            MyLeavingMessage myLeavingMessage = JSON.parseObject(JSON.toJSONString(requestModel.getParams()), MyLeavingMessage.class);
+            String message = myLeavingMessage.getMessage();
+            boolean flag = SensitiveWord.checkSenstiveWord(message);
+            if (flag) {
+                message = SensitiveWord.filterInfoAfter(message);
             }
-        } else {
-            if ((x + i) < 2) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ResponseModel.error("评论失败！");
+            myLeavingMessage.setMessage(message);
+            myLeavingMessage.setInsTime(new Date());
+            MyUser myUser = myUserMapper.selectByEmail(myLeavingMessage.getEmail());
+            if (null == myUser) {
+                myUser = new MyUser();
+                myUser.setEmail(myLeavingMessage.getEmail());
+                myUser.setNickName(myLeavingMessage.getName());
+                String Path = "networkAvatar.json";
+                BufferedReader reader = null;
+                InputStreamReader read = null;
+                String laststr = "";
+                read = new InputStreamReader(SensitiveWord.class.getClassLoader().getResourceAsStream(Path), "utf-8");
+                reader = new BufferedReader(read);
+                String tempString = null;
+                while ((tempString = reader.readLine()) != null) {
+                    laststr += tempString;
+                }
+                reader.close();
+                JSONArray urlList = JSON.parseArray(laststr);
+                Random rd = new Random();
+                //定义了一个整形a获得16以内的随机整数
+                //通过更改nextInt()中的数字来更改获取随机数的范围
+                int a = rd.nextInt(16);
+                myUser.setNetworkAvatar(urlList.getString((a-1)));
+                myUser.setInsTime(new Date());
+                myUser.setType(UserTypeEnum.其他.getIndex());
+                myUserMapper.insertSelective(myUser);
             }
+            int i = myLeavingMessageMapper.insertSelective(myLeavingMessage);
+            MyBlog myBlog = myBlogMapper.selectByPrimaryKey(myLeavingMessage.getBlogId());
+            myBlog.setComments(myBlog.getComments() + 1);
+            int x = myBlogMapper.updateByPrimaryKeySelective(myBlog);
+            if (null != myLeavingMessage.getParentId()) {
+                MyLeavingMessage myParentLeavingMessage = myLeavingMessageMapper.selectByPrimaryKey(myLeavingMessage.getParentId());
+                myParentLeavingMessage.setComments(myParentLeavingMessage.getComments() + 1);
+                int y = myLeavingMessageMapper.updateByPrimaryKeySelective(myParentLeavingMessage);
+                if ((x + i + y) < 3) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return ResponseModel.error("评论失败！");
+                }
+            } else {
+                if ((x + i) < 2) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return ResponseModel.error("评论失败！");
+                }
+            }
+            return ResponseModel.success("评论成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return ResponseModel.success("评论成功！");
+        return ResponseModel.error("评论失败！");
     }
 
 
     @Override
     public ModelAndView getNewCommont(Integer blogId) {
         ModelAndView mv = new ModelAndView();
-                //文章详情
+        //文章详情
         MyBlog myBlog = myBlogMapper.selectByPrimaryKey(blogId);
         List<Map> articleSonLabels = myLabelMapper.selectArticleSonLabels(blogId);
         myBlog.setReader(myBlog.getReader() + 1);
         myBlogMapper.updateByPrimaryKeySelective(myBlog);
         List<MyLeavingMessage> commentList = myLeavingMessageMapper.selectCommentByBlogId(blogId);
-        for(MyLeavingMessage myLeavingMessage : commentList){
-            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(),myLeavingMessage.getBlogId());
+        for (MyLeavingMessage myLeavingMessage : commentList) {
+            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(), myLeavingMessage.getBlogId());
             myLeavingMessage.setSonList(sonList);
         }
         mv.addObject("blogDetail", myBlog);

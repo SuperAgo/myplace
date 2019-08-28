@@ -1,3 +1,43 @@
 /*==================================================================================
     Custom Stylesheet (Any custom styling you want to apply should be defined here).
 ====================================================================================*/
+.equalsWidthDiv {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    position: relative;
+}
+
+.equals20 {
+    width: 20%;
+    padding-bottom: 20%;
+}
+
+.equals100-80 {
+    width: 100%;
+    padding-bottom: 80%;
+}
+
+.equals80-80 {
+    width: 80%;
+    padding-bottom: 80%;
+}
+
+.equals100-75 {
+    width: 100%;
+    padding-bottom: 75%;
+}
+
+.sonImgCss {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.pb-30 {
+    padding-bottom: 30px !important;
+}
+
+.pb-0 {
+    padding-bottom: 0px !important;
+}

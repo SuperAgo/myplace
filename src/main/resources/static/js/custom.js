@@ -77,7 +77,7 @@ function labSelect() {
                 content += '<div class="wrp-cover">';
                 content += '<div class="post-thumb">';
                 content += '<a onclick="getDetail(' + classificationArticles[i].id + ')">';
-                content += '<img src="../images/sidebar/rp-1.jpg" alt="" class="img-fluid">';
+                content += '<img src="'+classificationArticles[i].banner+'" alt="" class="img-fluid">';
                 content += '</a>';
                 content += '</div>';
                 content += '<div class="post-title">';

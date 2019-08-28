@@ -1,7 +1,7 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://118.190.247.157:3306/myplace?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.190.247.157:3306/myplace?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: Liu1234!
   server:
@@ -24,8 +24,8 @@ spring:
 #    prefix: /static/blog/,/static/console/
     suffix: .html
   jackson:
-    date-format: yyyy年MM月dd日
-    joda-date-time-format: yyyy年MM月dd日
+    date-format: yyyy-MM-dd HH:mm:ss
+    joda-date-time-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   thymeleaf:
     #模板的模式，支持 HTML, XML TEXT JAVASCRIPT

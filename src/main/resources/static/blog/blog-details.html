@@ -3,11 +3,15 @@
 <head th:replace="header :: headInfo">
     <title>FreeBlog</title>
 </head>
+<style>
+    .pt-88 {
+        padding-top: 0px;
+    }
+</style>
 <body>
 <!-- Page title -->
 <div class="page-title">
     <div class="container">
-        <h2 th:text="${blogDetail.title}">Blog Details: Standard</h2>
         <ul class="nav">
             <li th:each="blogTab:${blogTabs}">
                 <a th:if="${blogTab.tabUrl} ne 'detail'"
@@ -26,9 +30,12 @@
                 <div id="needRefesh" th:fragment="detail_refresh">
                     <!-- Post Thumbnail -->
                     <div class="post-thumb-cover">
-                        <div class="post-thumb">
-                            <img src="../images/blog/4.jpg" alt="" class="img-fluid">
+                        <div class="post-default">
+                            <div class="post-thumb">
+                                <img th:src="${blogDetail.banner}" alt="" class="img-fluid">
+                            </div>
                         </div>
+
                         <!-- Post Meta Info -->
                         <div class="post-meta-info">
                             <!-- Category -->
@@ -78,12 +85,6 @@
                     </div>
                     <!-- End of Tags -->
 
-                    <!-- 728 ad -->
-                    <div class="pt-40 pb-40 biz-ad">
-                        <a href="#"><img src="../images/ad-728.png" alt="" class="img-fluid"></a>
-                    </div>
-                    <!-- End of 728 ad -->
-
                     <!-- Comments -->
                     <a id="commonts"></a>
                     <button class="btn btn-comment collapsed" type="button" data-toggle="collapse"
@@ -98,12 +99,13 @@
                                 <div class="single-post-comment">
                                     <!-- Author Image -->
                                     <div class="comment-author-image">
-                                        <img src="../images/blog/post/author-1.jpg" alt="" class="img-fluid">
+                                        <img th:src="${comment.networkAvatar}" alt="" style="width: 100px" class="img-fluid">
                                     </div>
                                     <!-- Comment Content -->
                                     <div class="comment-content">
                                         <div class="comment-author-name">
-                                            <h6>[[${comment.name}]]</h6> <span> [[${#dates.format(comment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
+                                            <h7>[[${comment.name}]]</h7>
+                                            <span> [[${#dates.format(comment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
                                         </div>
                                         <p>[[${comment.message}]]</p>
                                         <a href="#setCommon" class="reply-btn"
@@ -112,20 +114,21 @@
                                 </div>
                                 <!-- End of Single Comment -->
                                 <ul class="children" th:if="${comment.sonList.size() > 0}">
-                                    <li class="single-comment-wrapper" th:each="sonComment :${comment.sonList}">
+                                    <li th:each="sonComment,sonStat :${comment.sonList}"
+                                        th:class="(${sonStat.index+1} eq ${sonStat.size}) ? 'single-comment-wrapper pb-30' : 'single-comment-wrapper pb-0'">
                                         <!-- Single Comment -->
                                         <div class="single-post-comment">
                                             <!-- Author Image -->
                                             <div class="comment-author-image">
-                                                <img src="../images/blog/post/author-1-1.jpg" alt="" class="img-fluid">
+                                                <img th:src="${sonComment.networkAvatar}" alt="" style="width: 100px" class="img-fluid">
                                             </div>
                                             <!-- Comment Content -->
                                             <div class="comment-content">
                                                 <div class="comment-author-name">
-                                                    <h6>[[${sonComment.name}]]</h6><span
-                                                        th:if="${sonComment.parentId != null}">回复：</span>
-                                                    <h6 th:if="${sonComment.parentId != null}">
-                                                        [[${sonComment.parentName}]]</h6> <span> [[${#dates.format(sonComment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
+                                                    <h7 th:if="${sonComment.parentId != null}">
+                                                        [[${sonComment.name}]]@[[${sonComment.parentName}]]
+                                                    </h7>
+                                                    <span> [[${#dates.format(sonComment.insTime,'yyyy-MM-dd HH:mm:ss')}]] </span>
                                                 </div>
                                                 <p>[[${sonComment.message}]]</p>
                                                 <a href="#setCommon" class="reply-btn"
@@ -186,12 +189,12 @@
     var testEditor;
     $(function () {
         testEditor = editormd.markdownToHTML("test-editormd", {
-            htmlDecode      : "style,script,iframe",  // you can filter tags decode
-            emoji           : true,
-            taskList        : true,
-            tex             : true,  // 默认不解析
-            flowChart       : true,  // 默认不解析
-            sequenceDiagram : true,  // 默认不解析
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            emoji: true,
+            taskList: true,
+            tex: true,  // 默认不解析
+            flowChart: true,  // 默认不解析
+            sequenceDiagram: true,  // 默认不解析
         })
     })
 </script>

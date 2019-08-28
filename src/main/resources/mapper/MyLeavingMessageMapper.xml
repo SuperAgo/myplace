@@ -7,6 +7,7 @@
     <result column="blog_id" jdbcType="INTEGER" property="blogId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="network_avatar" jdbcType="VARCHAR" property="networkAvatar" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="message" jdbcType="VARCHAR" property="message" />
     <result column="ins_time" jdbcType="TIMESTAMP" property="insTime" />
@@ -140,25 +141,48 @@
 
   <select id="selectCommentByBlogId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
-        t1.*, t2. NAME AS parent_name
+        t1.id,
+        t1.parent_id,
+        t1.blog_id,
+        mu.nick_name AS NAME,
+        mu.network_avatar,
+        t1.email,
+        t1.message,
+        t1.ins_time,
+        t1.comments,
+        t1.compliments,
+        t2. NAME AS parent_name
     FROM
         my_leaving_message t1
+    JOIN my_user AS mu ON mu.email = t1.email
     LEFT JOIN my_leaving_message t2 ON t1.parent_id = t2.id
     WHERE
         1 = 1
     AND t1.parent_id IS NULL
-    AND t1.blog_id = #{blogId}
+    AND t1.blog_id = 8
     ORDER BY
-	    comments DESC
+        comments DESC
     LIMIT 5
   </select>
 
   <select id="selectListByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
-        t1.*, t2. NAME AS parent_name
+        t1.id,
+        t1.parent_id,
+        t1.blog_id,
+        mu.nick_name AS NAME,
+        mu.network_avatar,
+        t1.email,
+        t1.message,
+        t1.ins_time,
+        t1.comments,
+        t1.compliments,
+        mu2.nick_name AS parent_name
     FROM
         my_leaving_message t1
+    JOIN my_user AS mu ON mu.email = t1.email
     LEFT JOIN my_leaving_message t2 ON t1.parent_id = t2.id
+    LEFT JOIN my_user AS mu2 ON mu2.email = t2.email
     WHERE
         t1.id IN (
             SELECT
@@ -195,9 +219,20 @@
 
   <select id="selectLeavingMessageList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
-        t1.*, t2. NAME AS parent_name
+        t1.id,
+        t1.parent_id,
+        t1.blog_id,
+        mu.nick_name AS NAME,
+        mu.network_avatar,
+        t1.email,
+        t1.message,
+        t1.ins_time,
+        t1.comments,
+        t1.compliments,
+        t2. NAME AS parent_name
     FROM
         my_leaving_message t1
+    JOIN my_user AS mu ON mu.email = t1.email
     LEFT JOIN my_leaving_message t2 ON t1.parent_id = t2.id
     WHERE
         1 = 1
@@ -209,10 +244,22 @@
 
   <select id="selectLeavingMessageListByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
-        t1.*, t2. NAME AS parent_name
+        t1.id,
+        t1.parent_id,
+        t1.blog_id,
+        mu.nick_name AS NAME,
+        mu.network_avatar,
+        t1.email,
+        t1.message,
+        t1.ins_time,
+        t1.comments,
+        t1.compliments,
+        mu2.nick_name AS parent_name
     FROM
         my_leaving_message t1
+    JOIN my_user AS mu ON mu.email = t1.email
     LEFT JOIN my_leaving_message t2 ON t1.parent_id = t2.id
+    LEFT JOIN my_user AS mu2 ON mu2.email = t2.email
     WHERE
         t1.id IN (
             SELECT

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Document Title -->
+    <title>小可爱体重图</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="../../images/heart.png">
+
+    <!--==== Google Fonts ====-->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+          rel="stylesheet">
+
+    <!-- CSS Files -->
+
+    <!--==== Bootstrap css file ====-->
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+
+    <!--==== Font-Awesome css file ====-->
+    <link rel="stylesheet" href="../../css/font-awesome.min.css">
+
+    <!--==== Animate CSS ====-->
+    <link rel="stylesheet" href="../../plugins/animate/animate.min.css">
+
+    <!--==== Owl Carousel ====-->
+    <link rel="stylesheet" href="../../plugins/owl-carousel/owl.carousel.min.css">
+
+    <!--==== Magnific Popup ====-->
+    <link rel="stylesheet" href="../../plugins/magnific-popup/magnific-popup.css">
+
+    <!--==== Style css file ====-->
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <!--==== Responsive css file ====-->
+    <link rel="stylesheet" href="../../css/responsive.css">
+
+    <!--==== Custom css file ====-->
+    <link rel="stylesheet" href="../../css/custom.css">
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+</head>
+<body style="background: url(../images/demoback.jpeg) round;">
+<!-- Page title -->
+<!-- End of Page title -->
+
+<div class="container">
+    <!-- Contact Cover -->
+    <div class="contact-cover">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="post-details-cover">
+                    <div class="post-thumb-cover">
+                        <div id="main" style="width: 100%;"></div>
+                        <div style="text-align: center;">
+                            <a class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm"
+                               onclick="getThisWeekData()"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                            <div class="layui-input-inline">
+                                <input type="text" name="time" id="time" placeholder="月份选择" readonly
+                                       style="height: 32px;border-radius: 10px 10px 10px 10px;" class="layui-input">
+                            </div>
+                            <a class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal"
+                               onclick="getAddData()"><i class="fa fa-balance-scale" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- End of Contact Cover -->
+</div>
+<div id="addData" style="display: none">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="insTime" id="insTime" required lay-verify="required" readonly
+                       placeholder="请选择日期" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">重量</label>
+            <div class="layui-input-inline">
+                <input type="text" name="weight" required lay-verify="number|trim" placeholder="请输入体重(kg)"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="display: none">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo" id="subForm">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="resetForm">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- ==== JQuery 1.12.1 js file ==== -->
+<script src="../../js/jQuery/jquery-3.4.1.js"></script>
+
+<!-- ==== Bootstrap js file ==== -->
+<script src="../../js/bootstrap.bundle.min.js"></script>
+
+<!-- ==== Owl Carousel ==== -->
+<script src="../../plugins/owl-carousel/owl.carousel.min.js"></script>
+
+<!-- ==== Magnific Popup ==== -->
+<script src="../../plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- ==== Script js file ==== -->
+<script src="../../js/scripts.js"></script>
+<script src="../layui/layui.js"></script>
+<script src="../../js/echarts.min.js"></script>
+<script>
+    layui.use(['layer', 'form', 'laydate'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var layer = layui.layer;
+
+        form.verify({
+            trim: function (value, item) { //value：表单的值、item：表单的DOM对象
+                var patt1 = new RegExp(/\s+/g);
+                if (patt1.test(value)) {
+                    return "有空格";
+                }
+            }
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#time' //指定元素
+            , type: 'month'
+            , max: new Date().toDateString()
+            , done: function (value, date, endDate) {
+                var time = value;
+                title = time.replace("-", "年") + '月';
+                getEcharts(title, time);
+            }
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#insTime' //指定元素
+            , type: 'datetime'
+            , btns: ['confirm']
+            , value: new Date()
+        });
+
+        var myChart;
+        var title;
+        var option;
+
+        window.getThisWeekData = function () {
+            title = '近七天';
+            getEcharts(title);
+        };
+
+        window.getAddData = function () {
+            layer.open({
+                type: 1,
+                content: $("#addData") //注意，如果str是object，那么需要字符拼接。
+                , btn: ['确定', '重置']
+                , yes: function (index, layero) {
+                    $("#subForm").click();
+                    return false;
+                }
+                , btn2: function (index, layero) {
+                    $("#resetForm").click();
+                    return false;
+                },
+                end: function () {
+                    $("#addData").hide();
+                }
+            });
+        };
+
+        form.on('submit(formDemo)', function (data) {
+            layer.msg("添加成功了哦！", function () {
+                $("#resetForm").click();
+                layer.closeAll();
+                getThisWeekData();
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //获取传入日期几日前的日期
+        var getBeforeDate = function (n, checkDate) {
+            var n = n;
+            var d = new Date(checkDate);
+            var year = d.getFullYear();
+            var mon = d.getMonth() + 1;
+            var day = d.getDate();
+            if (day <= n) {
+                if (mon > 1) {
+                    mon = mon - 1;
+                } else {
+                    year = year - 1;
+                    mon = 12;
+                }
+            }
+            d.setDate(d.getDate() - n);
+            year = d.getFullYear();
+            mon = d.getMonth() + 1;
+            day = d.getDate();
+            s = year + "-" + (mon < 10 ? ('0' + mon) : mon) + "-" + (day < 10 ? ('0' + day) : day);
+            return s;
+        }
+
+        var getRandom = function (min, max) {
+            //x上限，y下限
+            var x = max;
+            var y = min;
+            if (x < y) {
+                x = min;
+                y = max;
+            }
+            var rand = parseInt(Math.random() * (x - y + 1) + y);
+            return rand;
+        }
+
+        var createMonthDay = function (theDate) {
+            var daysOfMonth = [];
+            var theDateTime = new Date(theDate);
+            var fullYear = theDateTime.getFullYear();
+            var month = theDateTime.getMonth() + 1;
+            var lastDayOfMonth = new Date(fullYear, month, 0).getDate();
+            month = (month > 9) ? month : '0' + month;
+            for (var i = 1; i <= lastDayOfMonth; i++) {
+                var day = (i > 9) ? i : '0' + i
+                daysOfMonth.push(fullYear + '-' + month + '-' + day);
+            }
+            return daysOfMonth;
+        }
+
+        window.getEcharts = function (title, time) {
+            var dateList = [];
+            var weightList = [];
+            if (time) {
+                dateList = createMonthDay(time);
+                for (var i = 0; i < dateList.length; i++) {
+                    weightList.push(getRandom(45, 55));
+                }
+            } else {
+                for (var i = 0; i < 7; i++) {
+                    dateList.unshift(getBeforeDate(i, new Date()));
+                    weightList.push(getRandom(45, 55));
+                }
+            }
+
+            option = {
+                title: {
+                    text: "小主" + title + "数据折线图",
+                    left: "center",
+                    top: '2%',
+                    textStyle: {
+                        color: "#fff",
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        var result = params[0].name + '<br />';
+                        params.forEach(function (item) {
+                            result += item.data + 'kg<br />';
+                        });
+
+                        return result;
+                    },
+                },
+                grid: {
+                    left: '0%', //设置Y轴name距离左边容器的位置,类似于margin-left
+                    right: '0%', //设置Y轴name距离左边容器的位置,类似于margin-left
+                    containLabel: true
+                },
+                dataZoom: [
+                    { //Y轴固定,让内容滚动
+                        type: 'slider',
+                        show: false,
+                        xAxisIndex: [0],
+                        start: 1,
+                        end: 80,//设置X轴刻度之间的间隔(根据数据量来调整)
+                        zoomLock: true, //锁定区域禁止缩放(鼠标滚动会缩放,所以禁止)
+                    },
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        start: 1,
+                        end: 80,
+                        zoomLock: true, //锁定区域禁止缩放
+                    },
+
+                ],
+                xAxis: {
+                    name: "日期",
+                    type: 'category',
+                    data: dateList,
+                    axisLabel: {
+                        textStyle: {
+                            color: function (value, index) {
+                                return '#fff';
+                            }
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                yAxis: {
+                    name: "kg",
+                    type: 'value',
+                    splitNumber: 50,
+                    max: 55,
+                    min: 45,
+                    axisLabel: {
+                        textStyle: {
+                            color: function (value, index) {
+                                return '#fff';
+                            }
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                series: [{
+                    data: weightList,
+                    type: 'line'
+                }],
+                color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                        offset: 1, color: '#20F8FF' // 0% 处的颜色
+                    }, {
+                        offset: 0, color: '#F3FF5B' // 100% 处的颜色
+                    }],
+                }  //#be3fc5
+            };
+
+            myChart.setOption(option);
+        }
+
+        window.orient = function () {
+            if (window.orientation == 180 || window.orientation == 0) {
+                $("#main").css("height", ($(window).height()) + "px");
+            } else if (window.orientation == 90 || window.orientation == -90) {
+                $("#main").css("height", ($(window).height() + 300) + "px");
+            } else {
+                $("#main").css("height", ($(window).height()) + "px");
+            }
+            myChart = echarts.init(document.getElementById('main'));
+        };
+
+        layer.ready(function () {
+            orient();
+            getThisWeekData();
+        });
+    });
+    $(window).bind('orientationchange', function (e) {
+        window.location.reload()
+    });
+</script>
+</body>
+</html>
