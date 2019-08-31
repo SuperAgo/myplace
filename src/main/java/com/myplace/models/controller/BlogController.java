@@ -22,6 +22,12 @@ public class BlogController {
         return blogService.getMain();
     }
 
+    @ApiOperation(value = "播放器")
+    @RequestMapping("/audio")
+    public ModelAndView getAudio(){
+        return blogService.getAudio();
+    }
+
     @ApiOperation(value = "主页内容")
     @RequestMapping("/index")
     public ModelAndView getIndex(){

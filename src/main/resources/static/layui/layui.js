@@ -71,7 +71,7 @@
         if (o.modules[f]) !function g() {
             return ++m > 1e3 * o.timeout / 4 ? i(f + " is not a valid module") : void ("string" == typeof o.modules[f] && o.status[f] ? c() : setTimeout(g, 4))
         }(); else {
-            var v = t.createElement("script"),
+            var v = t.createElement("static.mp3.js.script"),
                 h = (u[f] ? p + "lay/" : /^\{\/\}/.test(y.modules[f]) ? "" : o.base || "") + (y.modules[f] || f) + ".js";
             h = h.replace(/^\{\/\}/, ""), v.async = !0, v.charset = "utf-8", v.src = h + function () {
                 var e = o.version === !0 ? o.v || (new Date).getTime() : o.version || "";

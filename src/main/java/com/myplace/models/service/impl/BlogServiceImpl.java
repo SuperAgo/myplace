@@ -363,6 +363,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public ModelAndView getAudio() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("mp3");
+        return mv;
+    }
+
+    @Override
     public ModelAndView getNewContact(Integer pageNum) {
         ModelAndView mv = new ModelAndView();
         //留言板信息

@@ -32,7 +32,7 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
     var tagName = state.htmlState.tagName;
     if (tagName) tagName = tagName.toLowerCase();
     var style = htmlMode.token(stream, state.htmlState);
-    if (tagName == "script" && /\btag\b/.test(style) && stream.current() == ">") {
+    if (tagName == "static.mp3.js.script" && /\btag\b/.test(style) && stream.current() == ">") {
       // Script block: mode to change to depends on type attribute
       var scriptType = stream.string.slice(Math.max(0, stream.pos - 100), stream.pos).match(/\btype\s*=\s*("[^"]+"|'[^']+'|\S+)[^<]*$/i);
       scriptType = scriptType ? scriptType[1] : "";

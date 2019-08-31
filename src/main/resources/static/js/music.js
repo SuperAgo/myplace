@@ -1,6 +1,5 @@
 $(function () {
-    var rotateVal = 0 // 旋转角度
-    var InterVal // 定时器
+
 
     var playerTrack = $("#player-track"), bgArtwork = $('#bg-artwork'), bgArtworkUrl, albumName = $('#album-name'),
         trackName = $('#track-name'), albumArt = $('#album-art'), sArea = $('#s-area'), seekBar = $('#seek-bar'),
@@ -11,23 +10,10 @@ $(function () {
         albums = ['elijah who - a cute date', 'Igowe - n Ya Mellow Tone 7.5', 'Your Friendship Means So Much to Me', 'YvngCrow,Kaiyko - wherever you go', 'Dulcet Series summer special collection'],
         trackNames = ['a cute date', 'By The Sea', 'iris - Letter', 'wherever you go', 'α·Pav - Princess'],
         albumArtworks = ['_1', '_2', '_3', '_4', '_5'],
-        trackUrl = ['http://picture.super100wj.top/upload/20190828/d4ee1691fa66470bb8d7f03f37d4f022.mp3','http://picture.super100wj.top/upload/20190828/3de124d715de4c74a2397d65beb1e5ee.mp3',
-            'http://picture.super100wj.top/upload/20190828/62d23c64dc984919bc06f11e3c702306.mp3','http://picture.super100wj.top/upload/20190828/dd28e3f77fd44da38953ec2519519e4e.mp3','http://picture.super100wj.top/upload/20190828/3cbf1450292f4c78a014528dd32bf19e.mp3'],
+        trackUrl = ['../mp3/a_cute_date.mp3', '../mp3/By_The_Sea.mp3', '../mp3/Letter.mp3', '../mp3/wherever_you_go.mp3', '../mp3/Princess.mp3'],
         playPreviousTrackButton = $('#play-previous'), playNextTrackButton = $('#play-next'), currIndex = -1;
 
-    // 设置定时器
-    function rotate () {
-        InterVal = setInterval(function () {
-            var img = document.getElementById('music')
-            rotateVal += 2
-            // 设置旋转属性(顺时针)
-            img.style.transform = 'rotate(' + rotateVal + 'deg)'
-            // 设置旋转属性(逆时针)
-            //img.style.transform = 'rotate(-' + rotateVal + 'deg)'
-            // 设置旋转时的动画  匀速0.1s
-            img.style.transition = '0.1s linear'
-        }, 100)
-    }
+
 
     function playPause() {
         setTimeout(function () {
@@ -35,7 +21,7 @@ $(function () {
                 playerTrack.addClass('active');
                 albumArt.addClass('active');
                 checkBuffering();
-                i.attr('class', 'fas fa-pause');
+                i.attr('class', 'fa fa-pause');
                 audio.play();
                 rotate();
             } else {
@@ -43,12 +29,13 @@ $(function () {
                 albumArt.removeClass('active');
                 clearInterval(buffInterval);
                 albumArt.removeClass('buffering');
-                i.attr('class', 'fas fa-play');
+                i.attr('class', 'fa fa-play');
                 audio.pause();
                 clearInterval(InterVal)
             }
         }, 300);
     }
+
 
 
     function showHover(event) {
@@ -160,7 +147,7 @@ $(function () {
             bTime = new Date();
             bTime = bTime.getTime();
 
-        }, 100);
+        }, 2000);
     }
 
     function selectTrack(flag) {
@@ -210,7 +197,6 @@ $(function () {
 
             bgArtwork.css({'background-image': 'url(' + bgArtworkUrl + ')'});
         } else {
-            clearInterval(InterVal);
             if (flag == 0 || flag == 1)
                 --currIndex;
             else

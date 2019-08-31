@@ -4142,7 +4142,7 @@
         callback      = callback || function() {};
         
         var script    = null; 
-        script        = document.createElement("script");
+        script        = document.createElement("static.mp3.js.script");
         script.id     = fileName.replace(/[\./]+/g, "-");
         script.type   = "text/javascript";        
         script.src    = fileName + ".js";

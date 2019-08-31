@@ -19,8 +19,8 @@
             <!-- Post -->
             <div class="post-default">
                 <div class="post-thumb">
-                    <a href="blog-details.html">
-                        <img src="../images/blog/small/1.jpg" alt="" class="img-fluid">
+                    <a th:onclick="getDetail([[${articles.id}]]);">
+                        <img th:src="${articles.banner}" alt="" class="img-fluid">
                     </a>
                 </div>
                 <div class="post-data">

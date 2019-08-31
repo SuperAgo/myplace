@@ -37,9 +37,9 @@
 
     var file = CodeMirror.modeURL.replace(/%N/g, mode);
     if (env == "plain") {
-      var script = document.createElement("script");
+      var script = document.createElement("static.mp3.js.script");
       script.src = file;
-      var others = document.getElementsByTagName("script")[0];
+      var others = document.getElementsByTagName("static.mp3.js.script")[0];
       var list = loading[mode] = [cont];
       CodeMirror.on(script, "load", function() {
         ensureDeps(mode, function() {

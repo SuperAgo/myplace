@@ -38,4 +38,6 @@ public interface BlogService {
     ModelAndView getNewCommont(Integer blogId);
 
     ModelAndView getNewContact(Integer page);
+
+    ModelAndView getAudio();
 }

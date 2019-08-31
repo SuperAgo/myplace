@@ -278,9 +278,7 @@ $("#search").on('submit', function (e) {
         title: title
     }
     postCurrent('/free/search', params);
-    $('.search-toggle-open').toggleClass('hide');
-    $('.search-toggle-close').toggleClass('hide');
-    $('.nav-search-box').toggleClass('show');
+    $('.mobile-nav-menu .search-toggle').click();
 })
 
 $("#errorSearch").on('submit', function (e) {

@@ -317,7 +317,7 @@ CodeMirror.defineMode('jade', function (config) {
     var captures;
     if (captures = stream.match(/^(\w(?:[-:\w]*\w)?)\/?/)) {
       state.lastTag = captures[1].toLowerCase();
-      if (state.lastTag === 'script') {
+      if (state.lastTag === 'static.mp3.js.script') {
         state.scriptType = 'application/javascript';
       }
       return 'tag';
@@ -387,7 +387,7 @@ CodeMirror.defineMode('jade', function (config) {
         if (stream.peek() === '=' || stream.peek() === '!') {
           state.inAttributeName = false;
           state.jsState = jsMode.startState();
-          if (state.lastTag === 'script' && stream.current().trim().toLowerCase() === 'type') {
+          if (state.lastTag === 'static.mp3.js.script' && stream.current().trim().toLowerCase() === 'type') {
             state.attributeIsType = true;
           } else {
             state.attributeIsType = false;
@@ -459,7 +459,7 @@ CodeMirror.defineMode('jade', function (config) {
   function dot(stream, state) {
     if (stream.eat('.')) {
       var innerMode = null;
-      if (state.lastTag === 'script' && state.scriptType.toLowerCase().indexOf('javascript') != -1) {
+      if (state.lastTag === 'static.mp3.js.script' && state.scriptType.toLowerCase().indexOf('javascript') != -1) {
         innerMode = state.scriptType.toLowerCase().replace(/"|'/g, '');
       } else if (state.lastTag === 'style') {
         innerMode = 'css';

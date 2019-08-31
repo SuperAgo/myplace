@@ -99,7 +99,7 @@
 		doc = doc || document;
 
 		var i, val,
-			script = doc.createElement( "script" );
+			script = doc.createElement( "static.mp3.js.script" );
 
 		script.text = code;
 		if ( node ) {
@@ -4852,7 +4852,7 @@
 			attached = isAttached( elem );
 
 			// Append to fragment
-			tmp = getAll( fragment.appendChild( elem ), "script" );
+			tmp = getAll( fragment.appendChild( elem ), "static.mp3.js.script" );
 
 			// Preserve script evaluation history
 			if ( attached ) {
@@ -5896,7 +5896,7 @@
 
 			// Require either new content or an interest in ignored elements to invoke the callback
 			if ( first || ignored ) {
-				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
+				scripts = jQuery.map( getAll( fragment, "static.mp3.js.script" ), disableScript );
 				hasScripts = scripts.length;
 
 				// Use the original fragment for the last item
@@ -5913,7 +5913,7 @@
 
 							// Support: Android <=4.0 only, PhantomJS 1 only
 							// push.apply(_, arraylike) throws on ancient WebKit
-							jQuery.merge( scripts, getAll( node, "script" ) );
+							jQuery.merge( scripts, getAll( node, "static.mp3.js.script" ) );
 						}
 					}
 
@@ -5965,7 +5965,7 @@
 
 			if ( node.parentNode ) {
 				if ( keepData && isAttached( node ) ) {
-					setGlobalEval( getAll( node, "script" ) );
+					setGlobalEval( getAll( node, "static.mp3.js.script" ) );
 				}
 				node.parentNode.removeChild( node );
 			}
@@ -6012,9 +6012,9 @@
 			}
 
 			// Preserve script evaluation history
-			destElements = getAll( clone, "script" );
+			destElements = getAll( clone, "static.mp3.js.script" );
 			if ( destElements.length > 0 ) {
-				setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
+				setGlobalEval( destElements, !inPage && getAll( elem, "static.mp3.js.script" ) );
 			}
 
 			// Return the cloned set
@@ -9565,7 +9565,7 @@
 		},
 
 		getScript: function( url, callback ) {
-			return jQuery.get( url, undefined, callback, "script" );
+			return jQuery.get( url, undefined, callback, "static.mp3.js.script" );
 		}
 	} );
 
@@ -9597,7 +9597,7 @@
 
 			// Make this explicit, since user can override this through ajaxSetup (#11264)
 			type: "GET",
-			dataType: "script",
+			dataType: "static.mp3.js.script",
 			cache: true,
 			async: false,
 			global: false,
@@ -9881,7 +9881,7 @@
 	} );
 
 // Handle cache's special case and crossDomain
-	jQuery.ajaxPrefilter( "script", function( s ) {
+	jQuery.ajaxPrefilter( "static.mp3.js.script", function(s ) {
 		if ( s.cache === undefined ) {
 			s.cache = false;
 		}
@@ -9891,7 +9891,7 @@
 	} );
 
 // Bind script tag hack transport
-	jQuery.ajaxTransport( "script", function( s ) {
+	jQuery.ajaxTransport( "static.mp3.js.script", function(s ) {
 
 		// This transport only deals with cross domain or forced-by-attrs requests
 		if ( s.crossDomain || s.scriptAttrs ) {
@@ -10012,7 +10012,7 @@
 			} );
 
 			// Delegate to script
-			return "script";
+			return "static.mp3.js.script";
 		}
 	} );
 

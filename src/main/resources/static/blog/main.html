@@ -13,8 +13,6 @@
           rel="stylesheet">
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="../layui/css/layui.css">
-
     <!--==== Bootstrap css file ====-->
     <link rel="stylesheet" href="../css/bootstrap.min.css">
 
@@ -38,10 +36,8 @@
 
     <!--==== Custom css file ====-->
     <link rel="stylesheet" href="../css/custom.css">
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/solid.css'>
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css'>
 
-    <link rel="stylesheet" href="../css/mp3Style.css">
+    <link rel="stylesheet" href="../mp3/css/player.css">
 
 </head>
 <body class="layui-layout-body">
@@ -64,49 +60,34 @@
                 </div>
             </form>
             <div id="app-cover">
-                <!--<div id="bg-artwork"></div>
-                <div id="bg-layer"></div>-->
-                <div id="player">
-                    <div id="player-track">
-                        <div id="album-name"></div>
-                        <div id="track-name"></div>
-                        <div id="track-time">
-                            <div id="current-time"></div>
-                            <div id="track-length"></div>
+                <div id="QPlayer">
+                    <div id="pContent">
+                        <div id="player">
+                            <span class="cover"></span>
+                            <div class="ctrl">
+                                <div class="musicTag marquee">
+                                    <strong>歌名</strong>
+                                    <span> - </span>
+                                    <span class="artist">歌手</span>
+                                </div>
+                                <div class="progresses">
+                                    <div class="timer left">0:00</div>
+                                    <div class="contr">
+                                        <div class="rewind icon"></div>
+                                        <div class="playback icon"></div>
+                                        <div class="fastforward icon"></div>
+                                    </div>
+                                    <div class="right">
+                                        <div class="liebiao icon"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div id="s-area">
-                            <div id="ins-time"></div>
-                            <div id="s-hover"></div>
-                            <div id="seek-bar"></div>
+                        <div class="ssBtn">
+                            <div class="adf"></div>
                         </div>
                     </div>
-                    <div id="player-content">
-                        <div id="album-art">
-                            <img src="../images/album_cover/a_cute_date.jpg" class="active" id="_1">
-                            <img src="../images/album_cover/By_The_Sea.jpg" class="active" id="_2">
-                            <img src="../images/album_cover/Letter.jpg" class="active" id="_3">
-                            <img src="../images/album_cover/wherever_you_go.jpg" class="active" id="_4">
-                            <img src="../images/album_cover/Princess.jpg" class="active" id="_5">
-                            <div id="buffer-box">缓冲…</div>
-                        </div>
-                        <div id="player-controls">
-                            <div class="control">
-                                <div class="button" id="play-previous">
-                                    <i class="fas fa-backward"></i>
-                                </div>
-                            </div>
-                            <div class="control">
-                                <div class="button" id="play-pause-button">
-                                    <i class="fas fa-play"></i>
-                                </div>
-                            </div>
-                            <div class="control">
-                                <div class="button" id="play-next">
-                                    <i class="fas fa-forward"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ol id="playlist"></ol>
                 </div>
             </div>
         </div>
@@ -156,14 +137,14 @@
                             <!-- Mobile Menu -->
                             <div class="mobile-menu-cover">
                                 <ul class="nav mobile-nav-menu">
-                                    <li class="search-toggle-open">
-                                        <img src="../images/search-icon.svg" alt="" class="img-fluid svg">
+                                    <li class="search-toggle open">
+                                        <label><i class="fa fa-search" aria-hidden="true"></i></label>
                                     </li>
-                                    <li class="search-toggle-close hide">
-                                        <img src="../images/close.svg" alt="" class="img-fluid">
+                                    <li class="music-toggle open">
+                                        <img id="music" src="../images/music.svg" alt="" class="img-fluid svg">
                                     </li>
-                                    <li class="search-toggle-open">
-                                        <img src="../images/music.svg" alt="" id="music" class="img-fluid svg">
+                                    <li class="music-toggle-close hide">
+                                        <label><i class="fa fa-play-circle" aria-hidden="true"></i></label>
                                     </li>
                                     <li class="nav-menu-toggle">
                                         <img src="../images/menu-toggler.svg" alt="" class="img-fluid svg">
@@ -202,10 +183,11 @@
 
 <!-- ==== Custom js file ==== -->
 <script src="../js/custom.js"></script>
+<script type="text/javascript" src="../mp3/js/jquery.min.js"></script>
+<script type="text/javascript" src="../mp3/js/jquery.marquee.min.js"></script>
+<script type="text/javascript" src="../mp3/js/player.js"></script>
 <script src="../js/canvas-particle.js"></script>
-<script src="../js/music.js"></script>
 <script>
-
     var config;
     $(function () {
         //取到窗口的高度
@@ -249,11 +231,17 @@
 
         //调用
         CanvasParticle(config);
+        bgChange();
     });
 
 
     function changeColor() {
         CanvasParticle(config);
+    }
+    function bgChange(){
+        var lis= $('.lib');
+        for(var i=0; i<lis.length; i+=2)
+            lis[i].style.background = 'rgba(246, 246, 246, 0.5)';
     }
 </script>
 </body>

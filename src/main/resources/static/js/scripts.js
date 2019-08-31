@@ -70,19 +70,46 @@ We may release future updates so it will overwrite this file. it's better and sa
 
   /* 03: Searh Box
   ==============================================*/
-  var searchOpen = $('.mobile-nav-menu .search-toggle-open');
-  var searchClose = $('.mobile-nav-menu .search-toggle-close');
+  var searchOpen = $('.mobile-nav-menu .search-toggle');
+  var musicOpen = $('.mobile-nav-menu .music-toggle');
+  var musicClose = $('.mobile-nav-menu .music-toggle-close');
   var searchBox = $('.nav-search-box');
   
   searchOpen.on('click', function () {
-    searchBox.addClass('show');
-    $(this).addClass('hide');
-    searchClose.removeClass('hide');
+    if(!$(this).hasClass('close')){
+      $("#search").show();
+      $("#app-cover").hide();
+      searchBox.addClass('show');
+      $(this).addClass('close');
+      $(this).removeClass('open');
+      $(this).find("i").removeClass('fa fa-search').addClass('fa fa-close');
+    }else{
+      searchBox.removeClass('show');
+      $(this).removeClass('close');
+      $(this).addClass('open');
+      $(this).find("i").removeClass('fa fa-close').addClass('fa fa-search');
+    }
   });
-  searchClose.on('click', function () {
-    searchBox.removeClass('show');
+
+  musicOpen.on('click', function () {
+    $("#QPlayer .ssBtn").click();
+    $(this).next().removeClass('hide');
     $(this).addClass('hide');
-    searchOpen.removeClass('hide');
+  });
+    /*if(!$(this).hasClass('close')){
+
+      // $(this).find("i").removeClass('fa fa-play-circle').addClass('fa fa-pause-circle');
+    }else{
+      searchBox.removeClass('show');
+      $(this).removeClass('close');
+      $(this).addClass('open');
+      // $(this).find("i").removeClass('fa fa-pause-circle').addClass('fa fa-play-circle');
+    }*/
+
+    musicClose.on('click', function () {
+      $("#QPlayer .ssBtn").click();
+      $('.mobile-nav-menu .music-toggle').removeClass("hide");
+      $(this).addClass('hide');
   });
 
 

@@ -22,6 +22,9 @@
     #album-name{
         display: none;
     }
+    #album-art.active{
+        top: -76px !important;
+    }
     .nav-search-box #app-cover #album-art{
         width: 60px;
         height: 60px;
@@ -30,7 +33,7 @@
 
 #app-cover {
     position: absolute;
-    top: 80%;
+    top: 75%;
     right: 0;
     left: 0;
     width: 800px;
@@ -76,7 +79,7 @@
     top: 0;
     right: 15px;
     left: 15px;
-    padding: 13px 22px 10px 184px;
+    padding: 13px 22px 20px 184px;
     background-color: #a9a9a9;
     border-radius: 15px 15px 0 0;
     transition: 0.3s ease top;
@@ -333,7 +336,7 @@
 }
 
 .button:hover {
-    background-color: #d6d6de;
+    background-color: rgba(214, 214, 222, 0);
 }
 
 .button:hover i {
