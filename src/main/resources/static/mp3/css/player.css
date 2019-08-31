@@ -183,7 +183,7 @@
 #pContent .ssBtn {
 	width:20px;
 	height:60px;
-	background:#00000040 none repeat scroll 0% 0%;
+	background:rgba(0, 0, 0, 0.20) none repeat scroll 0% 0%;
 	position:relative;
 	right:0px;
 	bottom:0px;
