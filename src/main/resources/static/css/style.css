@@ -4228,7 +4228,7 @@ blockquote cite {
     width: 121px;
     height: 121px;
     padding: 5px;
-    background: #34363870;
+    background: rgba(0, 0, 0, 0.20);
     bottom: 100px;
     left: -45px;
     -webkit-transform: translate3d(0, 50px, 0);
@@ -4255,7 +4255,7 @@ blockquote cite {
     display: block;
     border-width: 10px 10px 0;
     border-style: solid;
-    border-color: #34363870 transparent transparent;
+    border-color: rgba(0, 0, 0, 0.20) transparent transparent;
     margin-left: -10px;
     position: absolute;
     bottom: -10px;
