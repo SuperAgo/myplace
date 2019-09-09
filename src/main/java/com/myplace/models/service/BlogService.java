@@ -3,31 +3,27 @@ package com.myplace.models.service;
 
 import com.myplace.common.page.RequestModel;
 import com.myplace.common.page.ResponseModel;
+import com.myplace.models.entity.MyAbout;
+import com.myplace.models.entity.MyBlog;
+import com.myplace.models.entity.MyLeavingMessage;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+import java.util.Map;
+
 public interface BlogService {
-    ModelAndView getIndex();
-
-    ModelAndView getDetail(Integer blogId);
-
     ModelAndView getLabel(Integer page, Integer tabId);
 
     ModelAndView getTab(Integer page, Integer tabId);
 
-    ModelAndView getAbout();
-
     ModelAndView getContact(Integer page);
 
-    ResponseModel getClassificationArticles(Integer labelId);
-
-    ModelAndView getSearch(Integer page,String title);
+    List<MyBlog> getClassificationArticles(Integer labelId);
 
     ResponseModel getSubscribe(String email);
 
     ResponseModel setleaveAMessage(RequestModel requestModel);
-
-    ModelAndView getMain();
 
     ResponseModel setCommont(RequestModel requestModel);
 
@@ -40,4 +36,44 @@ public interface BlogService {
     ModelAndView getNewContact(Integer page);
 
     ModelAndView getAudio();
+
+    Map getMyUserByType(int index);
+
+    List<MyBlog> getSelectedArticles();
+
+    List<Map> getSonLabelList();
+
+    List<List> getMostCommentedArticles();
+
+    List<Map> getMyLabelList();
+
+    List<MyBlog> getCarouselArticle();
+
+    List<MyBlog> getLatestArticles();
+
+    List<MyBlog> getPopularArticles();
+
+    List<MyBlog> getMostReadingArticles();
+
+    List<MyBlog> selectMyBlogByPage(Map params);
+
+    Map getTabByTabUrl(Map map);
+
+    Map getTabBySonId(Integer sonId);
+
+    List<MyAbout> selectAll();
+
+    Map getBlogTabByBlogId(Integer blogId);
+
+    Map getTabByBlogId(Integer blogId);
+
+    MyBlog selectByPrimaryKey(Integer blogId);
+
+    List<Map> selectArticleSonLabels(Integer blogId);
+
+    void updateReader(MyBlog myBlog);
+
+    List<MyLeavingMessage> selectCommentByBlogId(Integer blogId);
+
+    List<MyLeavingMessage> selectListByParentId(Integer myLeavingMessageId, Integer blogId);
 }

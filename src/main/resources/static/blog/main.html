@@ -161,7 +161,7 @@
 
 
     <!-- 内容主体区域 -->
-    <iframe src="/free/index" height="700" frameborder="0" width="100%" id="mainFrame" name="my-iframe"></iframe>
+    <iframe src="" height="700" frameborder="0" width="100%" id="mainFrame" name="my-iframe"></iframe>
 </div>
 <script src="../layui/layui.js"></script>
 <!-- JS Files -->
@@ -190,6 +190,7 @@
 <script>
     var config;
     $(function () {
+        debugger
         //取到窗口的高度
         var winH = $(window).height() - 100;
         //取到页面的高度
@@ -206,6 +207,7 @@
         // console.log(window.name)
         if (!window.name) {
             window.name = 'main';
+            postCurrent('/free/index');
         } else {
             if (window.name == 'main' && url) {
                 window.name = url;

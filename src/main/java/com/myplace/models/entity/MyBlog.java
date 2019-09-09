@@ -1,8 +1,9 @@
 package com.myplace.models.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MyBlog {
+public class MyBlog implements Serializable {
     private String labelName;
     private String nickName;
     private String networkAvatar;

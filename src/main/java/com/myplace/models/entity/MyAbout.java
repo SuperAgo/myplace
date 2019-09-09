@@ -1,8 +1,9 @@
 package com.myplace.models.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MyAbout {
+public class MyAbout implements Serializable {
     private Integer id;
     private String content;
     private Date insTime;

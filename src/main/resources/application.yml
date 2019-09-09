@@ -1,42 +1,38 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myplace?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
-  server:
-    port: 8080
-    servlet:
-      session:
-        timeout: 30m #30���ӣ����ԵĻ�ʱ�䲻��̫�̣�����׼��m�Ƿ��ӵ�λ��s����ĵ�λ��h��Сʱ�ĵ�λ����д��λ�Ļ�Ĭ���Ǻ���
-  logging:
-    config: classpath:logback-admin.xml
-  log:
-    level:
-      root: info
-      my: debug
-    file: logs/admin-server.log
-    maxsize: 30MB
+  profiles:
+    active: dev
   main:
-    allow-bean-definition-overriding: true #当遇到同样名字的时候，是否允许覆盖注册
+      allow-bean-definition-overriding: true #当遇到同样名字的时候，是否允许覆盖注册
   mvc:
-    static-path-pattern: /**
-#    prefix: /static/blog/,/static/console/
-    suffix: .html
+      static-path-pattern: /**
+      #    prefix: /static/blog/,/static/console/
+      suffix: .html
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    joda-date-time-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
+      date-format: yyyy-MM-dd HH:mm:ss
+      joda-date-time-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
   thymeleaf:
-    #模板的模式，支持 HTML, XML TEXT JAVASCRIPT
-    mode: HTML5
-    #编码 可不用配置
-    encoding: UTF-8
-    #开发配置为false,避免修改模板还要重启服务器
-    cache: false
-    #配置模板路径，默认是templates，可以不用配置
-    prefix: classpath:/static/blog/
-    suffix: .html
+      #模板的模式，支持 HTML, XML TEXT JAVASCRIPT
+      mode: HTML5
+      #编码 可不用配置
+      encoding: UTF-8
+      #开发配置为false,避免修改模板还要重启服务器
+      cache: false
+      #配置模板路径，默认是templates，可以不用配置
+      prefix: classpath:/static/blog/
+      suffix: .html
+  redis:
+    port: 6379
+    database: 0
+    host: 118.190.247.157
+    password: Liu1234
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 86400000ms
 mybatis:
   type-aliases-package: com.myplace.models.entity
   mapper-locations: classpath:/mapper/*

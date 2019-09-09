@@ -33,4 +33,6 @@ public interface MyBlogMapper {
     List<MyBlog> getMostCommentedArticles();
 
     List<MyBlog> selectMyBlogByPage(Map<String, Object> params);
+
+    void updateReader(MyBlog myBlog);
 }

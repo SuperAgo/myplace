@@ -189,6 +189,10 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+    <update id="updateReader" parameterType="com.myplace.models.entity.MyBlog">
+        update my_blog set reader = #{reader,jdbcType=INTEGER} where id = #{id,jdbcType=INTEGER}
+    </update>
     <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.myplace.models.entity.MyBlog">
     update my_blog
     set banner = #{banner,jdbcType=VARCHAR},
@@ -236,6 +240,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             mb.is_top = 1
+            AND mb.label !=16
         ORDER BY
             mb.topping_time DESC
         LIMIT 3
@@ -254,6 +259,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
+            AND mb.label !=16
         ORDER BY
             mb.ins_time DESC
         LIMIT 3
@@ -272,6 +278,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
+            AND mb.label !=16
         ORDER BY
             mb.comments DESC,
             mb.reader DESC
@@ -291,6 +298,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
+            AND mb.label !=16
         ORDER BY
             mb.reader DESC
         LIMIT 5
@@ -309,6 +317,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             mb.is_selected = 1
+            AND mb.label !=16
         ORDER BY
             mb.selected_time DESC
         LIMIT 2
@@ -343,6 +352,7 @@
             join my_user as mu on mu.id = mb.author
         WHERE
             1 = 1
+            AND mb.label !=16
         ORDER BY
             mb.comments DESC
         LIMIT 6
