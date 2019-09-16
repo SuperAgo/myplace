@@ -1,6 +1,8 @@
 package com.myplace.models.entity;
 
-public class MyArticleLabel {
+import java.io.Serializable;
+
+public class MyArticleLabel implements Serializable {
     /**
      * Id
      */

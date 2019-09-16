@@ -1,8 +1,9 @@
 package com.myplace.models.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MyLabel {
+public class MyLabel implements Serializable {
     /**
      * Id
      */

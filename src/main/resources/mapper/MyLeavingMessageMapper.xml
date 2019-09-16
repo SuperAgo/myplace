@@ -229,7 +229,7 @@
         t1.ins_time,
         t1.comments,
         t1.compliments,
-        t2. NAME AS parent_name
+        t2.NAME AS parent_name
     FROM
         my_leaving_message t1
     JOIN my_user AS mu ON mu.email = t1.email

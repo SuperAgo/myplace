@@ -44,144 +44,6 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private RedisUtil redisUtil;
 
-    @Override
-    public ModelAndView getTab(Integer pageNum, Integer tabId) {
-        ModelAndView mv = new ModelAndView();
-        Map params = new HashMap();
-        params.put("tabId", tabId);
-        //类别信息
-        MyLabel myLabel = myLabelMapper.selectByPrimaryKey(tabId);
-        mv.addObject("myTab", myLabel);
-        PageHelper.startPage(pageNum, 6);
-        List<MyLabel> myLabelsList = myLabelMapper.selectMyLabelByPage(params);
-        PageInfo<MyLabel> myLabelPageInfo = new PageInfo<>(myLabelsList);
-        mv.addObject("PageInfo", myLabelPageInfo);
-        mv.addObject("url", "/free/tab");
-        String paramsId = "tabId=" + tabId;
-        mv.addObject("paramsId", paramsId);
-        //标签tab
-        List<Map> blogTabs = new ArrayList<>();
-        Map thisLabelTab = myLabelMapper.getTabByTabId(tabId);
-        blogTabs.add(thisLabelTab);
-        Integer sonId = (Integer) thisLabelTab.get("tabId");
-        for (int i = 0; i < 3; i++) {
-            Map labelTab = myLabelMapper.getTabBySonId(sonId);
-            blogTabs.add(labelTab);
-            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
-                break;
-            } else {
-                sonId = (Integer) labelTab.get("tabId");
-            }
-        }
-        Collections.reverse(blogTabs);
-        mv.addObject("blogTabs", blogTabs);
-
-        mv.setViewName("categories");
-        return mv;
-    }
-
-    @Override
-    public ModelAndView getLabel(Integer pageNum, Integer tabId) {
-        ModelAndView mv = new ModelAndView();
-        //sidebar栏  start
-        //关于博主
-        Map myUser = myUserMapper.selectByType(UserTypeEnum.博主.getIndex());
-        mv.addObject("myUser", myUser);
-        //精选*2
-        List<MyBlog> selectedArticles = myBlogMapper.getSelectedArticles();
-        mv.addObject("selectedArticles", selectedArticles);
-        //分类文章
-        List<Map> sonLabelList = myLabelMapper.getSonLabelList();
-        List<MyBlog> classificationArticles = myBlogMapper.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId"));
-        mv.addObject("sonLabelList", sonLabelList);
-        mv.addObject("classificationArticles", classificationArticles);
-        //评论最多文章
-        List<MyBlog> mostCommentedArticles = myBlogMapper.getMostCommentedArticles();
-        List<List> mostCommentedArticleList = new ArrayList();
-        List<MyBlog> page = new ArrayList<>();
-        for (MyBlog myBlog : mostCommentedArticles) {
-            if (page.size() < 2) {
-                page.add(myBlog);
-                if (page.size() == 2) {
-                    mostCommentedArticleList.add(page);
-                    page = new ArrayList<>();
-                }
-            }
-        }
-        mv.addObject("mostCommentedArticles", mostCommentedArticleList);
-        //sidebar栏  end
-        Map params = new HashMap();
-        params.put("label", tabId);
-        //类别信息
-        MyLabel myLabel = myLabelMapper.selectByPrimaryKey(tabId);
-        mv.addObject("myLabel", myLabel);
-        PageHelper.startPage(pageNum, 8);
-        List<MyBlog> myBlogList = myBlogMapper.selectMyBlogByPage(params);
-        PageInfo<MyBlog> myBlogPageInfo = new PageInfo<>(myBlogList);
-        mv.addObject("PageInfo", myBlogPageInfo);
-        mv.addObject("url", "/free/label");
-        String paramsId = "tabId=" + tabId;
-        mv.addObject("paramsId", paramsId);
-        //标签tab
-        List<Map> blogTabs = new ArrayList<>();
-        Map thisLabelTab = myLabelMapper.getTabByTabId(tabId);
-        blogTabs.add(thisLabelTab);
-        Integer sonId = (Integer) thisLabelTab.get("tabId");
-        for (int i = 0; i < 3; i++) {
-            Map labelTab = myLabelMapper.getTabBySonId(sonId);
-            blogTabs.add(labelTab);
-            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
-                break;
-            } else {
-                sonId = (Integer) labelTab.get("tabId");
-            }
-        }
-        Collections.reverse(blogTabs);
-        mv.addObject("blogTabs", blogTabs);
-
-        mv.setViewName("category-result");
-        return mv;
-    }
-
-
-    @Override
-    public ModelAndView getContact(Integer pageNum) {
-        ModelAndView mv = new ModelAndView();
-        //标签tab
-        List<Map> blogTabs = new ArrayList<>();
-        Map map = new HashMap();
-        map.put("url", "contact");
-        map.put("tabGrade", LabelGradeEnum.标题栏级.getIndex());
-        Map thisLabelTab = myLabelMapper.getTabByTabUrl(map);
-        mv.addObject("myTab", thisLabelTab);
-        blogTabs.add(thisLabelTab);
-        Integer sonId = (Integer) thisLabelTab.get("tabId");
-        for (int i = 0; i < 3; i++) {
-            Map labelTab = myLabelMapper.getTabBySonId(sonId);
-            blogTabs.add(labelTab);
-            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
-                break;
-            } else {
-                sonId = (Integer) labelTab.get("tabId");
-            }
-        }
-        Collections.reverse(blogTabs);
-        mv.addObject("blogTabs", blogTabs);
-
-        //留言板信息
-        PageHelper.startPage(pageNum, 10);
-        List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
-        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
-        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
-            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
-            myLeavingMessage.setSonList(sonList);
-        }
-        Map messageBoard = myUserMapper.getMyMessageBoard(UserTypeEnum.博主.getIndex());
-        mv.addObject("messageBoard", messageBoard);
-        mv.addObject("PageInfo", myLeavingMessagePageInfo);
-        mv.setViewName("contact");
-        return mv;
-    }
 
     @Override
     @Cacheable(value = "myUser", key = "#index")
@@ -195,15 +57,50 @@ public class BlogServiceImpl implements BlogService {
         return myLabelMapper.getBlogTabByBlogId(blogId);
     }
 
+    @Override
+    @Cacheable(value = "thisLabelTab", key = "#tabId")
+    public Map getTabByTabId(Integer tabId) {
+        return myLabelMapper.getTabByTabId(tabId);
+    }
 
     @Override
-    @Cacheable(value = "sonLeavingMessageList", key = "#sonLeavingMessageListBlogId")
+    @Cacheable(value = "myLabelsList", key = "#params")
+    public List<MyLabel> selectMyLabelByPage(Map params) {
+        return myLabelMapper.selectMyLabelByPage(params);
+    }
+
+    @Override
+    @Cacheable(value = "myLabelDetail", key = "#myLabelId")
+    public MyLabel selectMyLabelByPrimaryKey(Integer myLabelId) {
+        return myLabelMapper.selectByPrimaryKey(myLabelId);
+    }
+
+    @Override
+    @Cacheable(value = "messageBoard")
+    public Map getMyMessageBoard(int index) {
+        return myUserMapper.getMyMessageBoard(index);
+    }
+
+    @Override
+    @CachePut(value = "sonMessageList", key = "#parentId")
+    public List<MyLeavingMessage> selectLeavingMessageListByParentId(Integer parentId) {
+        return myLeavingMessageMapper.selectLeavingMessageListByParentId(parentId);
+    }
+
+    @Override
+    @CachePut(value = "myLeavingMessageList")
+    public List<MyLeavingMessage> selectLeavingMessageList() {
+        return myLeavingMessageMapper.selectLeavingMessageList();
+    }
+
+    @Override
+    @CachePut(value = "sonLeavingMessageList", key = "#sonLeavingMessageListBlogId")
     public List<MyLeavingMessage> selectListByParentId(Integer myLeavingMessageId, Integer sonLeavingMessageListBlogId) {
         return myLeavingMessageMapper.selectListByParentId(myLeavingMessageId, sonLeavingMessageListBlogId);
     }
 
     @Override
-    @Cacheable(value = "commentList", key = "#commentListBlogId")
+    @CachePut(value = "commentList", key = "#commentListBlogId")
     public List<MyLeavingMessage> selectCommentByBlogId(Integer commentListBlogId) {
         return myLeavingMessageMapper.selectCommentByBlogId(commentListBlogId);
     }
@@ -221,7 +118,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @CachePut(value = "myBlog", key = "#myBlogId")
-    public MyBlog selectByPrimaryKey(Integer myBlogId) {
+    public MyBlog selectMyBlogByPrimaryKey(Integer myBlogId) {
         MyBlog myBlog = myBlogMapper.selectByPrimaryKey(myBlogId);
         myBlog.setReader(myBlog.getReader() + 1);
         return myBlog;
@@ -234,7 +131,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Cacheable(value = "aboutList")
+    @CachePut(value = "aboutList")
     public List<MyAbout> selectAll() {
         return myAboutMapper.selectAll();
     }
@@ -331,24 +228,6 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ModelAndView getNewContact(Integer pageNum) {
-        ModelAndView mv = new ModelAndView();
-        //留言板信息
-        PageHelper.startPage(pageNum, 10);
-        List<MyLeavingMessage> myLeavingMessageList = myLeavingMessageMapper.selectLeavingMessageList();
-        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
-        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
-            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectLeavingMessageListByParentId(myLeavingMessage.getId());
-            myLeavingMessage.setSonList(sonList);
-        }
-        Map messageBoard = myUserMapper.getMyMessageBoard(UserTypeEnum.博主.getIndex());
-        mv.addObject("messageBoard", messageBoard);
-        mv.addObject("PageInfo", myLeavingMessagePageInfo);
-        mv.setViewName("contact::contact_refresh");
-        return mv;
-    }
-
-    @Override
     @Cacheable(value = "classificationArticles", key = "#labelId")
     public List<MyBlog> getClassificationArticles(Integer labelId) {
         return myBlogMapper.getClassificationArticles(labelId);
@@ -430,29 +309,6 @@ public class BlogServiceImpl implements BlogService {
         return ResponseModel.error("留言失败！");
     }
 
-    @Override
-    public ModelAndView getError() {
-        ModelAndView mv = new ModelAndView();
-        //header栏   start
-        List<Map> myLabelList = myLabelMapper.getLabelByGradeId(LabelGradeEnum.标题栏级.getIndex());
-        for (Map myLabel : myLabelList) {
-            List<Map> sonLabelList = myLabelMapper.getLabelByParentId((Integer) myLabel.get("id"));
-            myLabel.put("sonLabelList", sonLabelList);
-        }
-        mv.addObject("myLabelList", myLabelList);
-        //header栏   end
-        mv.setViewName("error");
-        return mv;
-    }
-
-
-    @Override
-    public ModelAndView getError404() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("404");
-        return mv;
-    }
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -517,24 +373,4 @@ public class BlogServiceImpl implements BlogService {
         return ResponseModel.error("评论失败！");
     }
 
-
-    @Override
-    public ModelAndView getNewCommont(Integer blogId) {
-        ModelAndView mv = new ModelAndView();
-        //文章详情
-        MyBlog myBlog = myBlogMapper.selectByPrimaryKey(blogId);
-        List<Map> articleSonLabels = myLabelMapper.selectArticleSonLabels(blogId);
-        myBlog.setReader(myBlog.getReader() + 1);
-        myBlogMapper.updateByPrimaryKeySelective(myBlog);
-        List<MyLeavingMessage> commentList = myLeavingMessageMapper.selectCommentByBlogId(blogId);
-        for (MyLeavingMessage myLeavingMessage : commentList) {
-            List<MyLeavingMessage> sonList = myLeavingMessageMapper.selectListByParentId(myLeavingMessage.getId(), myLeavingMessage.getBlogId());
-            myLeavingMessage.setSonList(sonList);
-        }
-        mv.addObject("blogDetail", myBlog);
-        mv.addObject("articleSonLabels", articleSonLabels);
-        mv.addObject("commentList", commentList);
-        mv.setViewName("blog-details::detail_refresh");
-        return mv;
-    }
 }

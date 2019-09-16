@@ -5,6 +5,7 @@ import com.myplace.common.page.RequestModel;
 import com.myplace.common.page.ResponseModel;
 import com.myplace.models.entity.MyAbout;
 import com.myplace.models.entity.MyBlog;
+import com.myplace.models.entity.MyLabel;
 import com.myplace.models.entity.MyLeavingMessage;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,12 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BlogService {
-    ModelAndView getLabel(Integer page, Integer tabId);
-
-    ModelAndView getTab(Integer page, Integer tabId);
-
-    ModelAndView getContact(Integer page);
-
     List<MyBlog> getClassificationArticles(Integer labelId);
 
     ResponseModel getSubscribe(String email);
@@ -26,14 +21,6 @@ public interface BlogService {
     ResponseModel setleaveAMessage(RequestModel requestModel);
 
     ResponseModel setCommont(RequestModel requestModel);
-
-    ModelAndView getError();
-
-    ModelAndView getError404();
-
-    ModelAndView getNewCommont(Integer blogId);
-
-    ModelAndView getNewContact(Integer page);
 
     ModelAndView getAudio();
 
@@ -67,7 +54,7 @@ public interface BlogService {
 
     Map getTabByBlogId(Integer blogId);
 
-    MyBlog selectByPrimaryKey(Integer blogId);
+    MyBlog selectMyBlogByPrimaryKey(Integer blogId);
 
     List<Map> selectArticleSonLabels(Integer blogId);
 
@@ -76,4 +63,17 @@ public interface BlogService {
     List<MyLeavingMessage> selectCommentByBlogId(Integer blogId);
 
     List<MyLeavingMessage> selectListByParentId(Integer myLeavingMessageId, Integer blogId);
+
+    List<MyLeavingMessage> selectLeavingMessageList();
+
+    List<MyLeavingMessage> selectLeavingMessageListByParentId(Integer myLeavingMessageId);
+
+    Map getMyMessageBoard(int index);
+
+    MyLabel selectMyLabelByPrimaryKey(Integer myLabelId);
+
+    List<MyLabel> selectMyLabelByPage(Map params);
+
+    Map getTabByTabId(Integer tabId);
+
 }

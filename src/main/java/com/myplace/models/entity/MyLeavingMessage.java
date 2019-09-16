@@ -1,9 +1,10 @@
 package com.myplace.models.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class MyLeavingMessage {
+public class MyLeavingMessage implements Serializable {
     private List<MyLeavingMessage> sonList;
 
     public List<MyLeavingMessage> getSonList() {

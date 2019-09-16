@@ -10,7 +10,7 @@ function postCurrent(url, params) {
     var form = $("<form method='post' target='my-iframe'></form>");
     var input;
     form.attr({"action": url});
-    if (params) {
+    if (params && typeof(params)!="undefined") {
         $.each(params, function (key, value) {
             input = $("<input type='hidden'>");
             input.attr({"name": key});

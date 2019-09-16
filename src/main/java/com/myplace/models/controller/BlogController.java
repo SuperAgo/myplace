@@ -6,6 +6,7 @@ import com.myplace.common.page.RequestModel;
 import com.myplace.common.page.ResponseModel;
 import com.myplace.models.entity.MyAbout;
 import com.myplace.models.entity.MyBlog;
+import com.myplace.models.entity.MyLabel;
 import com.myplace.models.entity.MyLeavingMessage;
 import com.myplace.models.entity.enums.LabelGradeEnum;
 import com.myplace.models.entity.enums.UserTypeEnum;
@@ -140,13 +141,59 @@ public class BlogController {
     @ApiOperation(value = "给我留言")
     @PostMapping("/contact")
     public ModelAndView getContact(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
-        return blogService.getContact(page);
+        ModelAndView mv = new ModelAndView();
+        //标签tab
+        List<Map> blogTabs = new ArrayList<>();
+        Map map = new HashMap();
+        map.put("url", "contact");
+        map.put("tabGrade", LabelGradeEnum.标题栏级.getIndex());
+        Map thisLabelTab = blogService.getTabByTabUrl(map);
+        mv.addObject("myTab", thisLabelTab);
+        blogTabs.add(thisLabelTab);
+        Integer sonId = (Integer) thisLabelTab.get("tabId");
+        for (int i = 0; i < 3; i++) {
+            Map labelTab = blogService.getTabBySonId(sonId);
+            blogTabs.add(labelTab);
+            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
+                break;
+            } else {
+                sonId = (Integer) labelTab.get("tabId");
+            }
+        }
+        Collections.reverse(blogTabs);
+        mv.addObject("blogTabs", blogTabs);
+        //留言板信息
+        PageHelper.startPage(page, 10);
+        List<MyLeavingMessage> myLeavingMessageList = blogService.selectLeavingMessageList();
+        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
+        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
+            List<MyLeavingMessage> sonMessageList = blogService.selectLeavingMessageListByParentId(myLeavingMessage.getId());
+            myLeavingMessage.setSonList(sonMessageList);
+        }
+        Map messageBoard = blogService.getMyMessageBoard(UserTypeEnum.博主.getIndex());
+        mv.addObject("messageBoard", messageBoard);
+        mv.addObject("PageInfo", myLeavingMessagePageInfo);
+        mv.setViewName("contact");
+        return mv;
     }
 
     @ApiOperation(value = "刷新留言")
     @PostMapping("/getNewContact")
     public ModelAndView getNewContact(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
-        return blogService.getNewContact(page);
+        ModelAndView mv = new ModelAndView();
+        //留言板信息
+        PageHelper.startPage(page, 10);
+        List<MyLeavingMessage> myLeavingMessageList = blogService.selectLeavingMessageList();
+        PageInfo<MyLeavingMessage> myLeavingMessagePageInfo = new PageInfo<>(myLeavingMessageList);
+        for (MyLeavingMessage myLeavingMessage : myLeavingMessagePageInfo.getList()) {
+            List<MyLeavingMessage> sonList = blogService.selectLeavingMessageListByParentId(myLeavingMessage.getId());
+            myLeavingMessage.setSonList(sonList);
+        }
+        Map messageBoard = blogService.getMyMessageBoard(UserTypeEnum.博主.getIndex());
+        mv.addObject("messageBoard", messageBoard);
+        mv.addObject("PageInfo", myLeavingMessagePageInfo);
+        mv.setViewName("contact::contact_refresh");
+        return mv;
     }
 
     @ApiOperation(value = "博客详情")
@@ -185,7 +232,7 @@ public class BlogController {
         mv.addObject("blogTabs", blogTabs);
 
         //文章详情
-        MyBlog myBlog = blogService.selectByPrimaryKey(blogId);
+        MyBlog myBlog = blogService.selectMyBlogByPrimaryKey(blogId);
         List<Map> articleSonLabels = blogService.selectArticleSonLabels(blogId);
         blogService.updateReader(myBlog);
         List<MyLeavingMessage> commentList = blogService.selectCommentByBlogId(blogId);
@@ -203,13 +250,89 @@ public class BlogController {
     @ApiOperation(value = "分类标签列表")
     @PostMapping("/tab")
     public ModelAndView getTab(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @Param("tabId") Integer tabId) {
-        return blogService.getTab(page, tabId);
+        ModelAndView mv = new ModelAndView();
+        Map params = new HashMap();
+        params.put("tabId", tabId);
+        params.put("page", page);
+        //类别信息
+        MyLabel myLabelDetail = blogService.selectMyLabelByPrimaryKey(tabId);
+        mv.addObject("myTab", myLabelDetail);
+        PageHelper.startPage(page, 6);
+        List<MyLabel> myLabelsList = blogService.selectMyLabelByPage(params);
+        PageInfo<MyLabel> myLabelPageInfo = new PageInfo<>(myLabelsList);
+        mv.addObject("PageInfo", myLabelPageInfo);
+        mv.addObject("url", "/free/tab");
+        String paramsId = "tabId=" + tabId;
+        mv.addObject("paramsId", paramsId);
+        //标签tab
+        List<Map> blogTabs = new ArrayList<>();
+        Map thisLabelTab = blogService.getTabByTabId(tabId);
+        blogTabs.add(thisLabelTab);
+        Integer sonId = (Integer) thisLabelTab.get("tabId");
+        for (int i = 0; i < 3; i++) {
+            Map labelTab = blogService.getTabBySonId(sonId);
+            blogTabs.add(labelTab);
+            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
+                break;
+            } else {
+                sonId = (Integer) labelTab.get("tabId");
+            }
+        }
+        Collections.reverse(blogTabs);
+        mv.addObject("blogTabs", blogTabs);
+
+        mv.setViewName("categories");
+        return mv;
     }
 
     @ApiOperation(value = "分类标签详情")
     @PostMapping("/label")
     public ModelAndView getLabel(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @Param("tabId") Integer tabId) {
-        return blogService.getLabel(page, tabId);
+        ModelAndView mv = new ModelAndView();
+        //sidebar栏  start
+        mv.addObject("myUser", blogService.getMyUserByType(UserTypeEnum.博主.getIndex()));
+        //精选*2
+        mv.addObject("selectedArticles", blogService.getSelectedArticles());
+        //分类文章
+        List<Map> sonLabelList = blogService.getSonLabelList();
+        mv.addObject("sonLabelList", sonLabelList);
+        mv.addObject("classificationArticles", blogService.getClassificationArticles((Integer) sonLabelList.get(0).get("tabId")));
+        //评论最多文章
+        mv.addObject("mostCommentedArticles", blogService.getMostCommentedArticles());
+        //sidebar栏  end
+
+        Map params = new HashMap();
+        params.put("label", tabId);
+        params.put("page", page);
+        //类别信息
+        MyLabel myLabel = blogService.selectMyLabelByPrimaryKey(tabId);
+        mv.addObject("myLabel", myLabel);
+        PageHelper.startPage(page, 8);
+        List<MyBlog> myBlogList = blogService.selectMyBlogByPage(params);
+        PageInfo<MyBlog> myBlogPageInfo = new PageInfo<>(myBlogList);
+        mv.addObject("PageInfo", myBlogPageInfo);
+        mv.addObject("url", "/free/label");
+        String paramsId = "tabId=" + tabId;
+        mv.addObject("paramsId", paramsId);
+        //标签tab
+        List<Map> blogTabs = new ArrayList<>();
+        Map thisLabelTab = blogService.getTabByTabId(tabId);
+        blogTabs.add(thisLabelTab);
+        Integer sonId = (Integer) thisLabelTab.get("tabId");
+        for (int i = 0; i < 3; i++) {
+            Map labelTab = blogService.getTabBySonId(sonId);
+            blogTabs.add(labelTab);
+            if (LabelGradeEnum.标题栏级.getIndex() == (Integer) labelTab.get("tabId")) {
+                break;
+            } else {
+                sonId = (Integer) labelTab.get("tabId");
+            }
+        }
+        Collections.reverse(blogTabs);
+        mv.addObject("blogTabs", blogTabs);
+
+        mv.setViewName("category-result");
+        return mv;
     }
 
     @ApiOperation(value = "博客订阅")
@@ -233,18 +356,38 @@ public class BlogController {
     @ApiOperation(value = "刷新评论")
     @PostMapping("/getNewCommont")
     public ModelAndView getNewCommont(@Param("blogId") Integer blogId) {
-        return blogService.getNewCommont(blogId);
+        ModelAndView mv = new ModelAndView();
+        //文章详情
+        MyBlog myBlog = blogService.selectMyBlogByPrimaryKey(blogId);
+        List<Map> articleSonLabels = blogService.selectArticleSonLabels(blogId);
+        myBlog.setReader(myBlog.getReader() + 1);
+        blogService.updateReader(myBlog);
+        List<MyLeavingMessage> commentList = blogService.selectCommentByBlogId(blogId);
+        for (MyLeavingMessage myLeavingMessage : commentList) {
+            List<MyLeavingMessage> sonList = blogService.selectListByParentId(myLeavingMessage.getId(), myLeavingMessage.getBlogId());
+            myLeavingMessage.setSonList(sonList);
+        }
+        mv.addObject("blogDetail", myBlog);
+        mv.addObject("articleSonLabels", articleSonLabels);
+        mv.addObject("commentList", commentList);
+        mv.setViewName("blog-details::detail_refresh");
+        return mv;
     }
 
     @ApiOperation(value = "错误")
     @RequestMapping("/error")
     public ModelAndView getError() {
-        return blogService.getError();
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("myLabelList",blogService.getMyLabelList());
+        mv.setViewName("error");
+        return mv;
     }
 
     @ApiOperation(value = "错误")
     @RequestMapping("/getError404")
     public ModelAndView getError404() {
-        return blogService.getError404();
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("404");
+        return mv;
     }
 }
